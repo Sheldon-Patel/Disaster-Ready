@@ -39,7 +39,7 @@ const UserSchema = new Schema<IUserDocument>({
   },
   phone: {
     type: String,
-    match: [/^\d{10}$/, 'Please provide a valid 10-digit phone number']
+    match: [/^\+?[\d\s-]{10,15}$/, 'Please provide a valid phone number']
   },
   school: {
     type: String,
@@ -74,7 +74,7 @@ const UserSchema = new Schema<IUserDocument>({
     },
     emergencyContact: {
       type: String,
-      match: [/^\d{10}$/, 'Please provide a valid 10-digit phone number']
+      match: [/^\+?[\d\s-]{10,15}$/, 'Please provide a valid phone number']
     }
   }
 }, {

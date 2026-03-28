@@ -191,7 +191,7 @@ const ModulesPage: React.FC = () => {
                       <svg className="w-4 h-4 mr-1 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span className="text-sm font-semibold text-gray-700">{module.estimatedTime} min</span>
+                      <span className="text-sm font-semibold text-gray-700">{Math.ceil((module.estimatedTime || 0) / 4)} min</span>
                     </div>
                   </div>
                   <div className="text-center bg-gray-50 rounded-lg p-3">
