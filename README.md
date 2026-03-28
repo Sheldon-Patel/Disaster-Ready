@@ -337,7 +337,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Punjab State Government for supporting disaster preparedness education
+- State Government for supporting disaster preparedness education
 - Educational institutions for providing feedback and requirements
 - Open source community for the amazing tools and libraries used
 - Disaster management experts for content validation
@@ -351,4 +351,3 @@ For support and questions:
 
 ---
 
-**Built with ❤️ for Punjab Schools' Safety and Preparedness**
