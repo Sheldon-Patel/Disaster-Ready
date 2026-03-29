@@ -1,137 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { DashboardAnalytics } from '../../types';
+import { useAuth } from '../../contexts/AuthContext';
+import { adminService } from '../../services/adminService';
 import VideoManagement from '../../components/admin/VideoManagement';
 
-const TeacherDashboard: React.FC = () => {
+const ManagementDashboard: React.FC = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadAnalytics = async () => {
-      setIsLoading(true);
-
-      // Simulate API call
-      setTimeout(() => {
-        const mockAnalytics: DashboardAnalytics = {
-          overview: {
-            totalUsers: 1250,
-            totalModules: 12,
-            totalDrillSessions: 3400,
-            totalBadges: 15
-          },
-          userDistribution: {
-            byRole: [
-              { _id: 'student', count: 1000 },
-              { _id: 'teacher', count: 200 },
-              { _id: 'parent', count: 50 }
-            ],
-            byDistrict: [
-              { _id: 'Ludhiana', count: 300 },
-              { _id: 'Amritsar', count: 250 },
-              { _id: 'Jalandhar', count: 200 },
-              { _id: 'Patiala', count: 180 },
-              { _id: 'Bathinda', count: 150 },
-              { _id: 'Others', count: 170 }
-            ]
-          },
-          moduleStats: {
-            completionStats: [
-              { _id: 'earthquake', count: 800 },
-              { _id: 'fire', count: 750 },
-              { _id: 'flood', count: 600 },
-              { _id: 'cyclone', count: 400 }
-            ],
-            popularity: [
-              {
-                _id: '1',
-                title: 'Earthquake Preparedness',
-                type: 'earthquake',
-                difficulty: 'beginner',
-                totalAttempts: 1200,
-                completions: 800,
-                completionRate: 66.7
-              },
-              {
-                _id: '2',
-                title: 'Fire Safety',
-                type: 'fire',
-                difficulty: 'beginner',
-                totalAttempts: 1100,
-                completions: 750,
-                completionRate: 68.2
-              }
-            ]
-          },
-          drillStats: {
-            performance: [
-              {
-                _id: 'evacuation',
-                totalSessions: 1500,
-                averageScore: 85.5,
-                averageTime: 12.3
-              },
-              {
-                _id: 'fire',
-                totalSessions: 1000,
-                averageScore: 82.1,
-                averageTime: 15.7
-              }
-            ]
-          },
-          topSchools: [
-            {
-              _id: 'India Public School',
-              totalStudents: 200,
-              totalPoints: 45000,
-              averagePoints: 225
-            },
-            {
-              _id: 'Delhi Public School',
-              totalStudents: 150,
-              totalPoints: 32000,
-              averagePoints: 213
-            }
-          ],
-          recentActivity: {
-            newUsers: 25,
-            completedModules: 45,
-            completedDrills: 120
-          },
-          badgeStats: [
-            {
-              _id: '1',
-              name: 'First Steps',
-              rarity: 'common',
-              points: 50,
-              holdersCount: 800
-            },
-            {
-              _id: '2',
-              name: 'Module Master',
-              rarity: 'epic',
-              points: 500,
-              holdersCount: 150
-            }
-          ],
-          learningProgress: [
-            { _id: { year: 2024, month: 1, day: 1 }, completions: 45, averageScore: 78.5 },
-            { _id: { year: 2024, month: 1, day: 2 }, completions: 52, averageScore: 82.1 }
-          ]
-        };
-
-        setAnalytics(mockAnalytics);
+      try {
+        setIsLoading(true);
+        const data = await adminService.getAnalytics();
+        setAnalytics(data);
+        setError(null);
+      } catch (err: any) {
+        console.error('Failed to load analytics:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+      } finally {
         setIsLoading(false);
-      }, 1000);
+      }
     };
 
     loadAnalytics();
   }, []);
 
+  const isAdmin = user?.role === 'admin';
+
   const navigation = [
     { name: 'Overview', href: '/teacher', current: location.pathname === '/teacher' },
-    { name: 'Videos', href: '/teacher/videos', current: location.pathname === '/teacher/videos' }
+    ...(isAdmin ? [
+      { name: 'Videos', href: '/teacher/videos', current: location.pathname === '/teacher/videos' }
+    ] : [
+      { name: 'My Students', href: '/teacher/students', current: location.pathname === '/teacher/students' }
+    ])
   ];
 
   if (isLoading) {
@@ -139,7 +46,27 @@ const TeacherDashboard: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
+          <p className="mt-4 text-gray-600">Loading {isAdmin ? 'admin' : 'teacher'} dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
+          <svg className="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Error</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full bg-red-600 text-white font-medium py-2 rounded-md hover:bg-red-700 transition"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -150,8 +77,14 @@ const TeacherDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
-          <p className="text-lg text-gray-600">Manage your students and educational content</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {isAdmin ? 'Admin' : 'Teacher'} Dashboard
+          </h1>
+          <p className="text-lg text-gray-600">
+            {isAdmin
+              ? 'Global system overview and content management'
+              : `Managing students at ${user?.school || 'your school'}`}
+          </p>
         </div>
 
         {/* Navigation */}
@@ -174,8 +107,9 @@ const TeacherDashboard: React.FC = () => {
 
         {/* Main Content */}
         <Routes>
-          <Route path="/" element={<OverviewTab analytics={analytics} />} />
+          <Route path="/" element={<OverviewTab analytics={analytics} isAdmin={isAdmin} />} />
           <Route path="/videos" element={<VideoManagement />} />
+          <Route path="/students" element={<StudentManagement />} />
         </Routes>
       </div>
     </div>
@@ -183,7 +117,7 @@ const TeacherDashboard: React.FC = () => {
 };
 
 // Overview Tab Component
-const OverviewTab: React.FC<{ analytics: DashboardAnalytics | null }> = ({ analytics }) => {
+const OverviewTab: React.FC<{ analytics: DashboardAnalytics | null; isAdmin: boolean }> = ({ analytics, isAdmin }) => {
   if (!analytics) return null;
 
   return (
@@ -236,7 +170,7 @@ const OverviewTab: React.FC<{ analytics: DashboardAnalytics | null }> = ({ analy
           <div className="flex items-center">
             <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
               </svg>
             </div>
             <div className="ml-4">
@@ -253,7 +187,7 @@ const OverviewTab: React.FC<{ analytics: DashboardAnalytics | null }> = ({ analy
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Users by Role</h3>
           <div className="space-y-3">
-            {analytics.userDistribution.byRole.map((role) => (
+            {analytics.userDistribution.byRole.map((role: any) => (
               <div key={role._id} className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700 capitalize">{role._id}s</span>
                 <div className="flex items-center">
@@ -290,36 +224,94 @@ const OverviewTab: React.FC<{ analytics: DashboardAnalytics | null }> = ({ analy
         </div>
       </div>
 
-      {/* Top Schools */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Performing Schools</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Points</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Points</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {analytics.topSchools.map((school) => (
-                <tr key={school._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{school._id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.totalStudents}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.totalPoints.toLocaleString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.averagePoints}</td>
+      {/* Top Schools - Only for Admin */}
+      {isAdmin && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Performing Schools</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">School</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Points</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Points</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {analytics.topSchools.map((school: any) => (
+                  <tr key={school._id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{school._id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.totalStudents}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.totalPoints.toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.averagePoints}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+      )}
+    </div>
+  );
+};
+
+// Student Management Component for Teachers
+const StudentManagement: React.FC = () => {
+  const [students, setStudents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setIsLoading(true);
+        const data = await adminService.getUsers({ role: 'student' });
+        setStudents(data || []);
+      } catch (err) {
+        console.error('Failed to fetch students:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchStudents();
+  }, []);
+
+  if (isLoading) return <div className="p-8 text-center text-gray-600">Loading students...</div>;
+
+  return (
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <h3 className="text-lg font-semibold text-gray-900">Registered Students</h3>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Login</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {students.map((student) => (
+              <tr key={student._id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{student.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Grade {student.grade}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.points}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {student.lastLogin ? new Date(student.lastLogin).toLocaleDateString() : 'Never'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {students.length === 0 && (
+          <div className="p-8 text-center text-gray-500">No students registered yet.</div>
+        )}
       </div>
     </div>
   );
 };
 
-
-
-export default TeacherDashboard;
+export default ManagementDashboard;

@@ -18,22 +18,24 @@ import { protect, authorize } from '../middleware/auth';
 
 const router = express.Router();
 
-// All admin routes require authentication and admin role
+// Require authentication for all admin routes
 router.use(protect);
+
+// Dashboard and Analytics (Admin/Teacher)
+router.get('/analytics', authorize('admin', 'teacher'), getDashboardAnalytics);
+
+// User Management (Admin/Teacher)
+router.get('/users', authorize('admin', 'teacher'), getUsers);
+router.put('/users/:id/status', authorize('admin'), updateUserStatus);
+
+// Preparedness Tracking (Admin/Teacher)
+router.get('/preparedness-scores', authorize('admin', 'teacher'), getPreparednessScores);
+
+// Data Export (Admin/Teacher)
+router.get('/export/:type', authorize('admin', 'teacher'), exportData);
+
+// Content Management (Admin Only)
 router.use(authorize('admin'));
-
-// Dashboard and Analytics
-router.get('/analytics', getDashboardAnalytics);
-
-// User Management
-router.get('/users', getUsers);
-router.put('/users/:id/status', updateUserStatus);
-
-// Preparedness Tracking
-router.get('/preparedness-scores', getPreparednessScores);
-
-// Data Export
-router.get('/export/:type', exportData);
 
 // Module Management
 router.get('/modules', getAllModulesAdmin);

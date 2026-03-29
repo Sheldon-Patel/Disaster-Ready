@@ -95,7 +95,7 @@ const Navbar: React.FC = () => {
                       : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
                       }`}
                   >
-                    Teacher Panel
+                    {user?.role === 'admin' ? 'Admin Panel' : 'Teacher Panel'}
                   </Link>
                 )}
               </>
@@ -278,7 +278,7 @@ const Navbar: React.FC = () => {
                       }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Teacher Panel
+                    {user?.role === 'admin' ? 'Admin Panel' : 'Teacher Panel'}
                   </Link>
                 )}
 

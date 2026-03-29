@@ -14,40 +14,58 @@ interface AuthRequest extends Request {
 // @access  Private (Admin)
 export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => {
   try {
+    const isTeacher = req.user.role === 'teacher';
+    const schoolName = req.user.school;
+
+    // Base filter for users
+    const userFilter: any = { isActive: true };
+    if (isTeacher) {
+      userFilter.school = schoolName;
+    }
+
     // Get total counts
-    const totalUsers = await User.countDocuments({ isActive: true });
+    const totalUsers = await User.countDocuments(userFilter);
     const totalModules = await DisasterModule.countDocuments();
     const totalDrillSessions = await DrillSession.countDocuments({ isCompleted: true });
     const totalBadges = await Badge.countDocuments();
 
     // User distribution by role
     const usersByRole = await User.aggregate([
-      { $match: { isActive: true } },
+      { $match: userFilter },
       { $group: { _id: '$role', count: { $sum: 1 } } }
     ]);
 
     // Users by district (from profile)
+    const districtMatch: any = { isActive: true, 'profile.district': { $exists: true } };
+    if (isTeacher) districtMatch.school = schoolName;
+
     const usersByDistrict = await User.aggregate([
-      { $match: { isActive: true, 'profile.district': { $exists: true } } },
+      { $match: districtMatch },
       { $group: { _id: '$profile.district', count: { $sum: 1 } } },
       { $sort: { count: -1 } }
     ]);
 
     // Module completion stats
-    const moduleCompletionStats = await UserProgress.aggregate([
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
-        }
-      }
-    ]);
+    let moduleCompletionStats;
+    if (isTeacher) {
+      // Find IDs of all students in this school
+      const schoolUserIds = (await User.find({ school: schoolName }).select('_id')).map(u => u._id);
+
+      moduleCompletionStats = await UserProgress.aggregate([
+        { $match: { userId: { $in: schoolUserIds } } },
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]);
+    } else {
+      moduleCompletionStats = await UserProgress.aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]);
+    }
 
     // Top performing schools
     const topSchools = await User.aggregate([
       {
-        $match: { 
-          isActive: true, 
+        $match: {
+          isActive: true,
           school: { $exists: true, $ne: null },
           points: { $gt: 0 }
         }
@@ -66,29 +84,40 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
 
     // Recent activity (last 7 days)
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    
+
     const recentActivity = {
-      newUsers: await User.countDocuments({ 
+      newUsers: await User.countDocuments({
         createdAt: { $gte: sevenDaysAgo },
-        isActive: true 
+        isActive: true
       }),
-      completedModules: await UserProgress.countDocuments({ 
+      completedModules: await UserProgress.countDocuments({
         completedAt: { $gte: sevenDaysAgo },
         status: 'completed'
       }),
-      completedDrills: await DrillSession.countDocuments({ 
+      completedDrills: await DrillSession.countDocuments({
         endTime: { $gte: sevenDaysAgo },
         isCompleted: true
       })
     };
 
     // Module popularity
+    const schoolUserIds = isTeacher
+      ? (await User.find({ school: schoolName }).select('_id')).map(u => u._id)
+      : null;
+
     const modulePopularity = await DisasterModule.aggregate([
       {
         $lookup: {
           from: 'userprogresses',
-          localField: '_id',
-          foreignField: 'moduleId',
+          let: { moduleId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$moduleId', '$$moduleId'] },
+                ...(isTeacher ? { userId: { $in: schoolUserIds } } : {})
+              }
+            }
+          ],
           as: 'progress'
         }
       },
@@ -98,13 +127,13 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
           type: 1,
           difficulty: 1,
           totalAttempts: { $size: '$progress' },
-          completions: { 
-            $size: { 
-              $filter: { 
-                input: '$progress', 
-                cond: { $eq: ['$$this.status', 'completed'] } 
-              } 
-            } 
+          completions: {
+            $size: {
+              $filter: {
+                input: '$progress',
+                cond: { $eq: ['$$this.status', 'completed'] }
+              }
+            }
           }
         }
       },
@@ -123,8 +152,11 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
     ]);
 
     // Drill performance by type
+    const drillMatch: any = { isCompleted: true };
+    if (isTeacher) drillMatch.userId = { $in: schoolUserIds };
+
     const drillPerformance = await DrillSession.aggregate([
-      { $match: { isCompleted: true } },
+      { $match: drillMatch },
       {
         $group: {
           _id: '$drillType',
@@ -141,8 +173,16 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
       {
         $lookup: {
           from: 'users',
-          localField: '_id',
-          foreignField: 'badges',
+          let: { badgeId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ['$$badgeId', '$badges'] },
+                isActive: true,
+                ...(isTeacher ? { school: schoolName } : {})
+              }
+            }
+          ],
           as: 'holders'
         }
       },
@@ -159,14 +199,15 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
 
     // Learning progress over time (last 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
+
+    const progressTimeMatch: any = {
+      completedAt: { $gte: thirtyDaysAgo },
+      status: 'completed'
+    };
+    if (isTeacher) progressTimeMatch.userId = { $in: schoolUserIds };
+
     const learningProgress = await UserProgress.aggregate([
-      {
-        $match: {
-          completedAt: { $gte: thirtyDaysAgo },
-          status: 'completed'
-        }
-      },
+      { $match: progressTimeMatch },
       {
         $group: {
           _id: {
@@ -222,23 +263,31 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
 // @access  Private (Admin)
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const { 
-      page = 1, 
-      limit = 20, 
-      role, 
-      school, 
-      district, 
+    const {
+      page = 1,
+      limit = 20,
+      role,
+      school,
+      district,
       search,
       isActive = 'true'
     } = req.query;
 
+    const isTeacher = (req as any).user.role === 'teacher';
+    const schoolName = (req as any).user.school;
+
     const query: any = {};
-    
-    if (role) query.role = role;
-    if (school) query.school = new RegExp(school as string, 'i');
+
+    if (isTeacher) {
+      query.school = schoolName;
+    } else if (role) {
+      query.role = role;
+    }
+
+    if (school && !isTeacher) query.school = new RegExp(school as string, 'i');
     if (district) query['profile.district'] = district;
     if (isActive !== 'all') query.isActive = isActive === 'true';
-    
+
     if (search) {
       query.$or = [
         { name: new RegExp(search as string, 'i') },
@@ -260,9 +309,9 @@ export const getUsers = async (req: Request, res: Response) => {
       users.map(async (user) => {
         const progress = await UserProgress.find({ userId: user._id });
         const completedModules = progress.filter(p => p.status === 'completed').length;
-        const drillSessions = await DrillSession.countDocuments({ 
-          userId: user._id, 
-          isCompleted: true 
+        const drillSessions = await DrillSession.countDocuments({
+          userId: user._id,
+          isCompleted: true
         });
 
         return {
@@ -335,11 +384,17 @@ export const updateUserStatus = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const getPreparednessScores = async (req: Request, res: Response) => {
   try {
-    const { school, grade, district, moduleType } = req.query;
+    const isTeacher = (req as any).user.role === 'teacher';
+    const teacherSchool = (req as any).user.school;
 
     // Build user filter
     const userFilter: any = { isActive: true };
-    if (school) userFilter.school = new RegExp(school as string, 'i');
+    if (isTeacher) {
+      userFilter.school = teacherSchool;
+    } else if (school) {
+      userFilter.school = new RegExp(school as string, 'i');
+    }
+
     if (grade) userFilter.grade = Number(grade);
     if (district) userFilter['profile.district'] = district;
 
@@ -356,7 +411,7 @@ export const getPreparednessScores = async (req: Request, res: Response) => {
     }
 
     // Build progress filter
-    const progressFilter: any = { 
+    const progressFilter: any = {
       userId: { $in: userIds },
       status: 'completed'
     };
@@ -404,12 +459,12 @@ export const getPreparednessScores = async (req: Request, res: Response) => {
     // Calculate preparedness scores
     const preparednessReport = users.map(user => {
       const userProgress = progressData.filter(p => p.userId.toString() === user._id.toString());
-      
+
       const totalModules = userProgress.length;
-      const averageScore = totalModules > 0 
+      const averageScore = totalModules > 0
         ? Math.round(userProgress.reduce((sum, p) => sum + p.score, 0) / totalModules)
         : 0;
-      
+
       const modulesByType = userProgress.reduce((acc, p) => {
         if (!acc[p.moduleType]) acc[p.moduleType] = [];
         acc[p.moduleType].push(p);
@@ -440,7 +495,7 @@ export const getPreparednessScores = async (req: Request, res: Response) => {
         averageScore,
         preparednessLevel,
         typeScores,
-        lastActivity: totalModules > 0 
+        lastActivity: totalModules > 0
           ? userProgress.sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime())[0].completedAt
           : null
       };
@@ -473,12 +528,18 @@ export const exportData = async (req: Request, res: Response) => {
     const { type } = req.params;
     const { format = 'json' } = req.query;
 
+    const isTeacher = (req as any).user.role === 'teacher';
+    const schoolName = (req as any).user.school;
+
     let data: any[] = [];
     let filename = '';
 
     switch (type) {
       case 'users':
-        data = await User.find({ isActive: true })
+        const userQuery: any = { isActive: true };
+        if (isTeacher) userQuery.school = schoolName;
+
+        data = await User.find(userQuery)
           .populate('badges', 'name')
           .select('-password')
           .lean();
@@ -486,7 +547,13 @@ export const exportData = async (req: Request, res: Response) => {
         break;
 
       case 'progress':
-        data = await UserProgress.find({ status: 'completed' })
+        const progressQuery: any = { status: 'completed' };
+        if (isTeacher) {
+          const schoolUserIds = (await User.find({ school: schoolName }).select('_id')).map(u => u._id);
+          progressQuery.userId = { $in: schoolUserIds };
+        }
+
+        data = await UserProgress.find(progressQuery)
           .populate('userId', 'name school grade')
           .populate('moduleId', 'title type difficulty')
           .lean();
@@ -494,7 +561,13 @@ export const exportData = async (req: Request, res: Response) => {
         break;
 
       case 'drills':
-        data = await DrillSession.find({ isCompleted: true })
+        const drillQuery: any = { isCompleted: true };
+        if (isTeacher) {
+          const schoolUserIds = (await User.find({ school: schoolName }).select('_id')).map(u => u._id);
+          drillQuery.userId = { $in: schoolUserIds };
+        }
+
+        data = await DrillSession.find(drillQuery)
           .populate('userId', 'name school grade')
           .lean();
         filename = 'drills_export';
@@ -535,12 +608,12 @@ export const exportData = async (req: Request, res: Response) => {
 // Helper function to convert data to CSV
 function convertToCSV(data: any[]): string {
   if (data.length === 0) return '';
-  
+
   const headers = Object.keys(data[0]);
   const csvRows = [];
-  
+
   csvRows.push(headers.join(','));
-  
+
   for (const row of data) {
     const values = headers.map(header => {
       const value = row[header];
@@ -551,7 +624,7 @@ function convertToCSV(data: any[]): string {
     });
     csvRows.push(values.join(','));
   }
-  
+
   return csvRows.join('\n');
 }
 
@@ -561,7 +634,7 @@ function convertToCSV(data: any[]): string {
 export const getAllModulesAdmin = async (req: Request, res: Response) => {
   try {
     const modules = await DisasterModule.find().sort({ createdAt: -1 });
-    
+
     res.status(200).json({
       success: true,
       count: modules.length,
@@ -583,7 +656,7 @@ export const createModuleAdmin = async (req: Request, res: Response) => {
   try {
     const moduleData = req.body;
     const module = await DisasterModule.create(moduleData);
-    
+
     res.status(201).json({
       success: true,
       message: 'Module created successfully',
@@ -591,7 +664,7 @@ export const createModuleAdmin = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('Create module error:', error);
-    
+
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map((err: any) => err.message);
       return res.status(400).json({
@@ -600,7 +673,7 @@ export const createModuleAdmin = async (req: Request, res: Response) => {
         errors: messages
       });
     }
-    
+
     res.status(500).json({
       success: false,
       message: 'Error creating module'
@@ -615,20 +688,20 @@ export const updateModuleAdmin = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    
+
     const module = await DisasterModule.findByIdAndUpdate(
       id,
       updateData,
       { new: true, runValidators: true }
     );
-    
+
     if (!module) {
       return res.status(404).json({
         success: false,
         message: 'Module not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       message: 'Module updated successfully',
@@ -636,7 +709,7 @@ export const updateModuleAdmin = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('Update module error:', error);
-    
+
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map((err: any) => err.message);
       return res.status(400).json({
@@ -645,7 +718,7 @@ export const updateModuleAdmin = async (req: Request, res: Response) => {
         errors: messages
       });
     }
-    
+
     res.status(500).json({
       success: false,
       message: 'Error updating module'
@@ -659,7 +732,7 @@ export const updateModuleAdmin = async (req: Request, res: Response) => {
 export const deleteModuleAdmin = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    
+
     const module = await DisasterModule.findById(id);
     if (!module) {
       return res.status(404).json({
@@ -667,13 +740,13 @@ export const deleteModuleAdmin = async (req: Request, res: Response) => {
         message: 'Module not found'
       });
     }
-    
+
     // Delete associated user progress
     await UserProgress.deleteMany({ moduleId: id });
-    
+
     // Delete the module
     await DisasterModule.findByIdAndDelete(id);
-    
+
     res.status(200).json({
       success: true,
       message: 'Module deleted successfully'
@@ -693,10 +766,10 @@ export const deleteModuleAdmin = async (req: Request, res: Response) => {
 export const getAllVideosAdmin = async (req: Request, res: Response) => {
   try {
     const modules = await DisasterModule.find().select('_id title type content.videos');
-    
+
     // Flatten all videos from all modules
     const allVideos: any[] = [];
-    
+
     modules.forEach(module => {
       if (module.content?.videos) {
         module.content.videos.forEach((video: any) => {
@@ -710,7 +783,7 @@ export const getAllVideosAdmin = async (req: Request, res: Response) => {
         });
       }
     });
-    
+
     res.status(200).json({
       success: true,
       count: allVideos.length,
@@ -731,14 +804,14 @@ export const getAllVideosAdmin = async (req: Request, res: Response) => {
 export const addVideoToModule = async (req: Request, res: Response) => {
   try {
     const { moduleId, video } = req.body;
-    
+
     if (!moduleId || !video) {
       return res.status(400).json({
         success: false,
         message: 'Module ID and video data are required'
       });
     }
-    
+
     const module = await DisasterModule.findById(moduleId);
     if (!module) {
       return res.status(404).json({
@@ -746,21 +819,21 @@ export const addVideoToModule = async (req: Request, res: Response) => {
         message: 'Module not found'
       });
     }
-    
+
     // Generate unique video ID if not provided
     if (!video.id) {
       video.id = `${module.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
-    
+
     // Initialize videos array if it doesn't exist
     if (!module.content.videos) {
       module.content.videos = [];
     }
-    
+
     // Add the video
     module.content.videos.push(video);
     await module.save();
-    
+
     res.status(201).json({
       success: true,
       message: 'Video added successfully',
@@ -785,7 +858,7 @@ export const updateVideoInModule = async (req: Request, res: Response) => {
   try {
     const { videoId } = req.params;
     const { moduleId, videoData } = req.body;
-    
+
     // Find the module containing the video
     let targetModule = null;
     if (moduleId) {
@@ -800,14 +873,14 @@ export const updateVideoInModule = async (req: Request, res: Response) => {
         }
       }
     }
-    
+
     if (!targetModule) {
       return res.status(404).json({
         success: false,
         message: 'Module or video not found'
       });
     }
-    
+
     // Find and update the video
     const videoIndex = targetModule.content.videos.findIndex((v: any) => v.id === videoId);
     if (videoIndex === -1) {
@@ -816,16 +889,16 @@ export const updateVideoInModule = async (req: Request, res: Response) => {
         message: 'Video not found'
       });
     }
-    
+
     // Update the video
     targetModule.content.videos[videoIndex] = {
       ...targetModule.content.videos[videoIndex],
       ...videoData,
       id: videoId // Preserve the original ID
     };
-    
+
     await targetModule.save();
-    
+
     res.status(200).json({
       success: true,
       message: 'Video updated successfully',
@@ -849,29 +922,29 @@ export const updateVideoInModule = async (req: Request, res: Response) => {
 export const deleteVideoFromModule = async (req: Request, res: Response) => {
   try {
     const { videoId } = req.params;
-    
+
     // Find the module containing the video
     const modules = await DisasterModule.find();
     let targetModule = null;
-    
+
     for (const module of modules) {
       if (module.content?.videos?.some((v: any) => v.id === videoId)) {
         targetModule = module;
         break;
       }
     }
-    
+
     if (!targetModule) {
       return res.status(404).json({
         success: false,
         message: 'Video not found'
       });
     }
-    
+
     // Remove the video
     targetModule.content.videos = targetModule.content.videos.filter((v: any) => v.id !== videoId);
     await targetModule.save();
-    
+
     res.status(200).json({
       success: true,
       message: 'Video deleted successfully'

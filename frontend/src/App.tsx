@@ -21,7 +21,7 @@ import DrillsPage from './pages/drills/DrillsPage';
 import LeaderboardPage from './pages/gamification/LeaderboardPage';
 import BadgesPage from './pages/gamification/BadgesPage';
 import ProfilePage from './pages/ProfilePage';
-import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import ManagementDashboard from './pages/teacher/ManagementDashboard';
 import HazardAlertsPage from './pages/HazardAlertsPage';
 import EmergencyContactsPage from './pages/EmergencyContactsPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -111,7 +111,7 @@ function App() {
                     {/* Teacher Routes */}
                     <Route path="/teacher/*" element={
                       <ProtectedRoute requiredRole={['admin', 'teacher']}>
-                        <TeacherDashboard />
+                        <ManagementDashboard />
                       </ProtectedRoute>
                     } />
 

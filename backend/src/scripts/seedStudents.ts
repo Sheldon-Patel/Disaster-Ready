@@ -101,9 +101,49 @@ async function main() {
         console.log('🔌 Connected to MongoDB');
 
         // ── Step 1: Remove old demo users ────────────────────────────
-        const demoEmails = ['admin@demo.com', 'teacher@demo.com', 'student@demo.com', 'parent@demo.com'];
-        const deleteResult = await User.deleteMany({ email: { $in: demoEmails } });
-        console.log(`🗑️  Removed ${deleteResult.deletedCount} old demo users`);
+        const adminEmail = 'admin@disasterready.in';
+        const deleteResult = await User.deleteMany({
+            $or: [
+                { role: 'teacher' },
+                { email: adminEmail },
+                { email: { $in: ['admin@demo.com', 'teacher@demo.com', 'student@demo.com', 'parent@demo.com'] } }
+            ]
+        });
+        console.log(`🗑️  Removed ${deleteResult.deletedCount} old admin and teacher accounts`);
+
+        // ── Step 2: Create Admin ───────────────────────────────
+        console.log('👤 Creating System Admin account...');
+        await User.create({
+            name: 'System Admin',
+            email: adminEmail,
+            password: 'admin123',
+            role: 'admin',
+            isActive: true,
+            school: 'Disaster Ready HQ'
+        });
+        console.log(`✅ Created Admin: ${adminEmail} / admin123`);
+
+        // ── Step 3: Create Teachers for each unique school ───────────
+        const uniqueSchools = [...new Set(students.map(s => s.school))];
+        console.log(`👤 Creating Teachers for ${uniqueSchools.length} unique schools...`);
+
+        for (const school of uniqueSchools) {
+            // Create a slug for the email
+            const slug = school.toLowerCase()
+                .replace(/[^a-z0-9]+/g, '.')
+                .replace(/(^\.|\.$)/g, '');
+            const teacherEmail = `teacher@${slug}.edu.in`;
+
+            await User.create({
+                name: `${school} Teacher`,
+                email: teacherEmail,
+                password: 'teacher123',
+                role: 'teacher',
+                isActive: true,
+                school: school
+            });
+            console.log(`  ✅ ${school} -> ${teacherEmail}`);
+        }
 
         // ── Step 2: Get all module IDs ───────────────────────────────
         const modules = await DisasterModule.find({}, '_id').lean();
