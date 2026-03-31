@@ -6,7 +6,7 @@ import User from '../models/User';
 import UserProgress from '../models/UserProgress';
 import DrillSession from '../models/DrillSession';
 import Badge from '../models/Badge';
-import { sendSMS } from '../services/smsService';
+
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -64,9 +64,7 @@ export const linkChildAccount = async (req: AuthenticatedRequest, res: Response)
 
     await familyRelationship.save();
 
-    // Send verification SMS to parent
-    const verificationMessage = `Your family link verification code is: ${familyRelationship.verificationCode}. This code expires in 24 hours.`;
-    await sendSMS(emergencyContact.phone, verificationMessage);
+
 
     res.status(201).json({
       success: true,
@@ -183,29 +181,29 @@ export const getParentDashboard = async (req: AuthenticatedRequest, res: Respons
     const childrenData = familyRelationships.map(relationship => {
       return relationship.children.map(child => {
         const childId = child._id || child;
-        const childProgress = progressData.filter(p => 
+        const childProgress = progressData.filter(p =>
           p.userId.toString() === childId.toString()
         );
-        const childDrills = drillSessions.filter(d => 
+        const childDrills = drillSessions.filter(d =>
           d.userId.toString() === childId.toString()
         );
-        const childBadges = badges.filter(b => 
+        const childBadges = badges.filter(b =>
           (b.user._id || b.user).toString() === childId.toString()
         );
 
         // Calculate statistics
         const completedModules = childProgress.filter(p => p.status === 'completed').length;
         const completedDrills = childDrills.filter(d => d.isCompleted).length;
-        const averageScore = childProgress.length > 0 
+        const averageScore = childProgress.length > 0
           ? Math.round(childProgress.reduce((sum, p) => sum + p.score, 0) / childProgress.length)
           : 0;
 
         // Recent activity (last 7 days)
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        const recentProgress = childProgress.filter(p => 
+        const recentProgress = childProgress.filter(p =>
           p.updatedAt && p.updatedAt > sevenDaysAgo
         );
-        const recentDrills = childDrills.filter(d => 
+        const recentDrills = childDrills.filter(d =>
           d.createdAt && d.createdAt > sevenDaysAgo
         );
 
@@ -241,7 +239,7 @@ export const getParentDashboard = async (req: AuthenticatedRequest, res: Respons
       totalChildren: childrenData.length,
       totalModulesCompleted: childrenData.reduce((sum, child) => sum + child.stats.modulesCompleted, 0),
       totalDrillsCompleted: childrenData.reduce((sum, child) => sum + child.stats.drillsCompleted, 0),
-      averageScore: childrenData.length > 0 
+      averageScore: childrenData.length > 0
         ? Math.round(childrenData.reduce((sum, child) => sum + child.stats.averageScore, 0) / childrenData.length)
         : 0,
       totalBadges: childrenData.reduce((sum, child) => sum + child.stats.totalBadges, 0)
@@ -308,17 +306,17 @@ export const getChildProgress = async (req: AuthenticatedRequest, res: Response)
     // Calculate learning analytics
     const analytics = {
       totalTimeSpent: progress.reduce((sum, p) => sum + (p.timeSpent || 0), 0),
-      averageScore: progress.length > 0 
+      averageScore: progress.length > 0
         ? Math.round(progress.reduce((sum, p) => sum + p.score, 0) / progress.length)
         : 0,
-      completionRate: progress.length > 0 
+      completionRate: progress.length > 0
         ? Math.round((progress.filter(p => p.status === 'completed').length / progress.length) * 100)
         : 0,
       strongestAreas: Object.keys(progressByType)
         .map(type => ({
           type,
           averageScore: Math.round(
-            progressByType[type].reduce((sum, p) => sum + p.score, 0) / 
+            progressByType[type].reduce((sum, p) => sum + p.score, 0) /
             progressByType[type].length
           )
         }))
@@ -328,7 +326,7 @@ export const getChildProgress = async (req: AuthenticatedRequest, res: Response)
         .map(type => ({
           type,
           averageScore: Math.round(
-            progressByType[type].reduce((sum, p) => sum + p.score, 0) / 
+            progressByType[type].reduce((sum, p) => sum + p.score, 0) /
             progressByType[type].length
           )
         }))
@@ -380,11 +378,11 @@ export const updateFamilySettings = async (req: AuthenticatedRequest, res: Respo
     if (permissions) {
       relationship.permissions = { ...relationship.permissions, ...permissions };
     }
-    
+
     if (notifications) {
       relationship.notifications = { ...relationship.notifications, ...notifications };
     }
-    
+
     if (emergencyContact) {
       relationship.emergencyContact = { ...relationship.emergencyContact, ...emergencyContact };
     }
@@ -460,30 +458,30 @@ export const getFamilyNotifications = async (req: AuthenticatedRequest, res: Res
 
     // Fetch recent activities
     const [recentProgress, recentDrills, recentBadges] = await Promise.all([
-      UserProgress.find({ 
+      UserProgress.find({
         userId: { $in: childrenIds },
         updatedAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
       })
-      .populate('userId', 'name')
-      .populate('moduleId', 'title')
-      .sort({ updatedAt: -1 })
-      .limit(parseInt(limit as string)),
-      
-      DrillSession.find({ 
+        .populate('userId', 'name')
+        .populate('moduleId', 'title')
+        .sort({ updatedAt: -1 })
+        .limit(parseInt(limit as string)),
+
+      DrillSession.find({
         userId: { $in: childrenIds },
         createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
       })
-      .populate('userId', 'name')
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit as string)),
-      
-      Badge.find({ 
+        .populate('userId', 'name')
+        .sort({ createdAt: -1 })
+        .limit(parseInt(limit as string)),
+
+      Badge.find({
         user: { $in: childrenIds },
         earnedAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
       })
-      .populate('user', 'name')
-      .sort({ earnedAt: -1 })
-      .limit(parseInt(limit as string))
+        .populate('user', 'name')
+        .sort({ earnedAt: -1 })
+        .limit(parseInt(limit as string))
     ]);
 
     // Format notifications

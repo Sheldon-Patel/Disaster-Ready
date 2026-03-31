@@ -20,7 +20,6 @@ import drillRoutes from './routes/drills';
 import enhancedDrillRoutes from './routes/enhancedDrills';
 import adminRoutes from './routes/admin';
 import emergencyRoutes from './routes/emergency';
-import alertRoutes from './routes/alerts';
 import schoolRoutes from './routes/schools';
 // import familyRoutes from './routes/family';
 
@@ -91,7 +90,6 @@ app.use('/api/drills', drillRoutes);
 app.use('/api/enhanced-drills', enhancedDrillRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/emergency', emergencyRoutes);
-app.use('/api/alerts', alertRoutes);
 app.use('/api/schools', schoolRoutes);
 // app.use('/api/family', familyRoutes); // Temporarily disabled
 
@@ -162,26 +160,6 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Handle emergency alerts for Punjab
-  socket.on('join-alerts', (data) => {
-    const { district } = data;
-    socket.join(`alerts-${district}`);
-    console.log(`User joined alerts for district: ${district}`);
-  });
-
-  // Admin broadcast emergency alert
-  socket.on('broadcast-alert', (data) => {
-    const { districts, alert } = data;
-
-    districts.forEach((district: string) => {
-      io.to(`alerts-${district}`).emit('emergency-alert', {
-        ...alert,
-        timestamp: new Date().toISOString()
-      });
-    });
-
-    console.log(`Emergency alert broadcasted to districts: ${districts.join(', ')}`);
-  });
 
   // Handle leaderboard updates
   socket.on('join-leaderboard', (data) => {
@@ -239,7 +217,7 @@ server.listen(PORT, async () => {
     📊 Socket.io server ready for real-time connections
     💾 Database: MongoDB connection established
     🛡️  JWT Authentication enabled
-    🔥 Ready to serve Punjab schools!
+    🔥 Ready to serve students!
   `);
 
   // Seed initial data in development

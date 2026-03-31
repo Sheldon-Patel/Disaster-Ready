@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import EmergencyContact from '../models/EmergencyContact';
-import { smsService } from '../services/smsService';
+
 
 interface AuthRequest extends Request {
   user?: any;
@@ -71,70 +71,7 @@ export const getContactsByDistrict = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Send emergency SMS alert
-// @route   POST /api/emergency/send-alert
-// @access  Private (Admin/Teacher)
-export const sendEmergencyAlert = async (req: AuthRequest, res: Response) => {
-  try {
-    const { district, message, contactTypes, severity = 'high' } = req.body;
 
-    if (!district || !message) {
-      return res.status(400).json({
-        success: false,
-        message: 'District and message are required'
-      });
-    }
-
-    // Get contacts based on criteria
-    const query: any = {
-      district,
-      isActive: true
-    };
-
-    if (contactTypes && contactTypes.length > 0) {
-      query.type = { $in: contactTypes };
-    }
-
-    const contacts = await EmergencyContact.find(query);
-
-    if (contacts.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'No emergency contacts found for the specified criteria'
-      });
-    }
-
-    // Send SMS alerts
-    const smsResult = await smsService.sendBulkAlert(
-      contacts.map(c => ({
-        phone: c.phone,
-        name: c.name,
-        type: c.type
-      })),
-      message,
-      severity
-    );
-
-    res.status(200).json({
-      success: smsResult.success,
-      message: `Alert sent to ${smsResult.sent} contacts, ${smsResult.failed} failed`,
-      data: {
-        totalContacts: contacts.length,
-        sent: smsResult.sent,
-        failed: smsResult.failed,
-        district,
-        severity
-      }
-    });
-
-  } catch (error) {
-    console.error('Send emergency alert error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error sending emergency alert'
-    });
-  }
-};
 
 // @desc    Create new emergency contact (Admin only)
 // @route   POST /api/emergency/contacts
@@ -248,35 +185,4 @@ export const deleteEmergencyContact = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Test SMS functionality
-// @route   POST /api/emergency/test-sms
-// @access  Private (Admin)
-export const testSMS = async (req: Request, res: Response) => {
-  try {
-    const { phoneNumber, testMessage } = req.body;
 
-    if (!phoneNumber) {
-      return res.status(400).json({
-        success: false,
-        message: 'Phone number is required'
-      });
-    }
-
-    const message = testMessage || 'This is a test message from Punjab Disaster Preparedness System. SMS functionality is working correctly.';
-
-    const result = await smsService.sendEmergencyAlert([phoneNumber], message, 'test');
-
-    res.status(200).json({
-      success: result.success,
-      message: result.success ? 'Test SMS sent successfully' : 'Failed to send test SMS',
-      data: result
-    });
-
-  } catch (error) {
-    console.error('Test SMS error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error testing SMS functionality'
-    });
-  }
-};

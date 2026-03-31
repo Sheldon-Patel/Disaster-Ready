@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import DrillSession from '../models/DrillSession';
 import User from '../models/User';
-import { VirtualDrill, DrillSession as VirtualDrillSession } from '../models/VirtualDrill';
+import { VirtualDrill, VirtualDrillSession } from '../models/VirtualDrill';
 import { io } from '../server';
 import mongoose from 'mongoose';
 
@@ -306,9 +306,9 @@ const ENHANCED_DRILL_SCENARIOS = {
 export const getEnhancedScenarios = async (req: AuthRequest, res: Response) => {
   try {
     const { difficulty = 'intermediate' } = req.query;
-    
-    const scenarios = ENHANCED_DRILL_SCENARIOS[difficulty as keyof typeof ENHANCED_DRILL_SCENARIOS] || 
-                     ENHANCED_DRILL_SCENARIOS.intermediate;
+
+    const scenarios = ENHANCED_DRILL_SCENARIOS[difficulty as keyof typeof ENHANCED_DRILL_SCENARIOS] ||
+      ENHANCED_DRILL_SCENARIOS.intermediate;
 
     res.status(200).json({
       success: true,
@@ -375,7 +375,7 @@ export const createDrillSession = async (req: AuthRequest, res: Response) => {
 
     // Create socket room
     const roomId = `drill-session-${sessionId}`;
-    
+
     // Emit session created event
     io.emit('new-drill-session', {
       sessionId,
@@ -411,7 +411,7 @@ export const createDrillSession = async (req: AuthRequest, res: Response) => {
 export const getActiveSessions = async (req: AuthRequest, res: Response) => {
   try {
     global.activeDrillSessions = global.activeDrillSessions || new Map();
-    
+
     const activeSessions = Array.from(global.activeDrillSessions.values())
       .filter((session: any) => session.status !== 'completed');
 
@@ -508,31 +508,31 @@ export const getUserStats = async (req: AuthRequest, res: Response) => {
     const userId = req.user.id;
 
     // Get drill sessions from database
-    const completedDrills = await DrillSession.find({ 
-      userId, 
-      isCompleted: true 
+    const completedDrills = await DrillSession.find({
+      userId,
+      isCompleted: true
     });
 
     // Calculate stats
     const totalDrills = completedDrills.length;
     const totalScore = completedDrills.reduce((sum, drill) => sum + (drill.score || 0), 0);
     const averageScore = totalDrills > 0 ? Math.round(totalScore / totalDrills) : 0;
-    
+
     const completionTimes = completedDrills
       .filter(drill => drill.totalTime)
       .map(drill => drill.totalTime!);
-    
+
     const bestTime = completionTimes.length > 0 ? Math.min(...completionTimes) : 0;
-    
+
     // Calculate completion rate (completed vs attempted)
     const allAttempts = await DrillSession.find({ userId });
-    const completionRate = allAttempts.length > 0 ? 
+    const completionRate = allAttempts.length > 0 ?
       Math.round((totalDrills / allAttempts.length) * 100) : 0;
 
     // Get user ranking
     const allUsers = await User.find({ role: 'student' }, { _id: 1, points: 1 })
       .sort({ points: -1 });
-    
+
     const userIndex = allUsers.findIndex(u => u._id.toString() === userId);
     const rank = userIndex >= 0 ? userIndex + 1 : allUsers.length + 1;
 
@@ -575,9 +575,9 @@ export const getUserAchievements = async (req: AuthRequest, res: Response) => {
     const userId = req.user.id;
 
     // Get user's completed drills
-    const completedDrills = await DrillSession.find({ 
-      userId, 
-      isCompleted: true 
+    const completedDrills = await DrillSession.find({
+      userId,
+      isCompleted: true
     });
 
     // Define achievements
@@ -691,7 +691,7 @@ export const startDrillSession = async (req: AuthRequest, res: Response) => {
     // Update session status
     session.status = 'in_progress';
     session.participants.forEach(p => p.status = 'in_progress');
-    
+
     global.activeDrillSessions.set(sessionId, session);
 
     // Create database record
@@ -807,7 +807,7 @@ export const getLeaderboard = async (req: AuthRequest, res: Response) => {
     // Aggregate user drill statistics
     const leaderboard = await DrillSession.aggregate([
       {
-        $match: { 
+        $match: {
           isCompleted: true,
           ...dateFilter
         }

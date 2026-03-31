@@ -123,21 +123,6 @@ export interface IEmergencyContact {
   createdAt?: Date;
 }
 
-export interface IPunjabAlert {
-  _id?: string;
-  title: string;
-  description: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  type: 'weather' | 'earthquake' | 'flood' | 'fire' | 'health' | 'security';
-  affectedDistricts: string[];
-  isActive: boolean;
-  validUntil: Date;
-  actionRequired?: string;
-  contactInfo?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 export interface IBadge {
   _id?: string;
   name: string;

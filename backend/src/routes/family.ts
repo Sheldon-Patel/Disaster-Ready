@@ -95,9 +95,9 @@ router.get('/notifications', getFamilyNotifications);
 router.get('/emergency-contacts', async (req: any, res) => {
   try {
     const parentId = req.user.id;
-    
+
     const FamilyRelationship = (await import('../models/FamilyRelationship')).default;
-    
+
     const relationships = await FamilyRelationship.find({
       parent: parentId,
       isVerified: true
@@ -123,66 +123,18 @@ router.get('/emergency-contacts', async (req: any, res) => {
   }
 });
 
-// Send emergency message to all family members
-router.post('/emergency-broadcast', [
-  body('message')
-    .isLength({ min: 10, max: 500 })
-    .withMessage('Emergency message must be between 10 and 500 characters'),
-  body('type')
-    .isIn(['emergency', 'alert', 'info'])
-    .withMessage('Invalid message type')
-], async (req: any, res) => {
-  try {
-    const { message, type = 'emergency' } = req.body;
-    const parentId = req.user.id;
-    
-    const FamilyRelationship = (await import('../models/FamilyRelationship')).default;
-    const { smsService } = await import('../services/smsService');
-    
-    const relationships = await FamilyRelationship.find({
-      parent: parentId,
-      isVerified: true,
-      'notifications.emergencyAlerts': true
-    });
 
-    // Send SMS to parent's emergency contact numbers
-    const phoneNumbers = relationships.map(rel => rel.emergencyContact.phone);
-    const smsResult = await smsService.sendEmergencyAlert(
-      phoneNumbers,
-      message,
-      type
-    );
-
-    res.json({
-      success: smsResult.success,
-      message: `Emergency message sent to ${smsResult.sent} of ${relationships.length} family contact(s)`,
-      data: {
-        contactsNotified: smsResult.sent,
-        failed: smsResult.failed,
-        messageType: type,
-        errors: smsResult.errors
-      }
-    });
-
-  } catch (error) {
-    console.error('Error broadcasting emergency message:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error while broadcasting emergency message'
-    });
-  }
-});
 
 // Get family statistics summary
 router.get('/stats', async (req: any, res) => {
   try {
     const parentId = req.user.id;
-    
+
     const FamilyRelationship = (await import('../models/FamilyRelationship')).default;
     const UserProgress = (await import('../models/UserProgress')).default;
     const DrillSession = (await import('../models/DrillSession')).default;
     const Badge = (await import('../models/Badge')).default;
-    
+
     const relationships = await FamilyRelationship.find({
       parent: parentId,
       isVerified: true
@@ -201,17 +153,17 @@ router.get('/stats', async (req: any, res) => {
 
     // Get recent activity (last 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
+
     const [recentProgress, recentDrills] = await Promise.all([
-      UserProgress.countDocuments({ 
-        user: { $in: childrenIds }, 
+      UserProgress.countDocuments({
+        user: { $in: childrenIds },
         updatedAt: { $gte: thirtyDaysAgo },
-        completed: true 
+        completed: true
       }),
-      DrillSession.countDocuments({ 
-        user: { $in: childrenIds }, 
+      DrillSession.countDocuments({
+        user: { $in: childrenIds },
         createdAt: { $gte: thirtyDaysAgo },
-        completed: true 
+        completed: true
       })
     ]);
 

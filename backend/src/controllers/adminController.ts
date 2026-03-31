@@ -4,6 +4,7 @@ import DisasterModule from '../models/DisasterModule';
 import UserProgress from '../models/UserProgress';
 import DrillSession from '../models/DrillSession';
 import Badge from '../models/Badge';
+import { VirtualDrill } from '../models/VirtualDrill';
 
 interface AuthRequest extends Request {
   user?: any;
@@ -23,10 +24,10 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
       userFilter.school = schoolName;
     }
 
-    // Get total counts
-    const totalUsers = await User.countDocuments(userFilter);
+    // Get total counts (specifically students for the dashboard overview)
+    const totalUsers = await User.countDocuments({ ...userFilter, role: 'student' });
     const totalModules = await DisasterModule.countDocuments();
-    const totalDrillSessions = await DrillSession.countDocuments({ isCompleted: true });
+    const totalVirtualDrills = await VirtualDrill.countDocuments({ isActive: true });
     const totalBadges = await Badge.countDocuments();
 
     // User distribution by role
@@ -49,7 +50,7 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
     let moduleCompletionStats;
     if (isTeacher) {
       // Find IDs of all students in this school
-      const schoolUserIds = (await User.find({ school: schoolName }).select('_id')).map(u => u._id);
+      const schoolUserIds = (await User.find({ school: schoolName }).select('_id')).map(u => u._id.toString());
 
       moduleCompletionStats = await UserProgress.aggregate([
         { $match: { userId: { $in: schoolUserIds } } },
@@ -82,6 +83,29 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
       { $limit: 10 }
     ]);
 
+    // Top Students (School Specific if teacher, Global if admin)
+    const topStudents = await User.find(userFilter)
+      .sort({ points: -1 })
+      .limit(5)
+      .select('name points grade school');
+
+    // School Average Score
+    let schoolAverageScore = 0;
+    if (isTeacher) {
+      const schoolUserIds = (await User.find({ school: schoolName }).select('_id')).map(u => u._id.toString());
+      const avgResult = await UserProgress.aggregate([
+        { $match: { userId: { $in: schoolUserIds }, status: 'completed' } },
+        { $group: { _id: null, avgScore: { $avg: '$score' } } }
+      ]);
+      schoolAverageScore = avgResult.length > 0 ? Math.round(avgResult[0].avgScore) : 0;
+    } else {
+      const avgResult = await UserProgress.aggregate([
+        { $match: { status: 'completed' } },
+        { $group: { _id: null, avgScore: { $avg: '$score' } } }
+      ]);
+      schoolAverageScore = avgResult.length > 0 ? Math.round(avgResult[0].avgScore) : 0;
+    }
+
     // Recent activity (last 7 days)
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
@@ -102,18 +126,18 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
 
     // Module popularity
     const schoolUserIds = isTeacher
-      ? (await User.find({ school: schoolName }).select('_id')).map(u => u._id)
+      ? (await User.find({ school: schoolName }).select('_id')).map(u => u._id.toString())
       : null;
 
     const modulePopularity = await DisasterModule.aggregate([
       {
         $lookup: {
           from: 'userprogresses',
-          let: { moduleId: '$_id' },
+          let: { moduleIdStr: { $toString: '$_id' } },
           pipeline: [
             {
               $match: {
-                $expr: { $eq: ['$moduleId', '$$moduleId'] },
+                $expr: { $eq: ['$moduleId', '$$moduleIdStr'] },
                 ...(isTeacher ? { userId: { $in: schoolUserIds } } : {})
               }
             }
@@ -228,8 +252,9 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
         overview: {
           totalUsers,
           totalModules,
-          totalDrillSessions,
-          totalBadges
+          totalVirtualDrills,
+          totalBadges,
+          schoolAverageScore
         },
         userDistribution: {
           byRole: usersByRole,
@@ -243,6 +268,7 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
           performance: drillPerformance
         },
         topSchools,
+        topStudents,
         recentActivity,
         badgeStats,
         learningProgress
@@ -280,8 +306,11 @@ export const getUsers = async (req: Request, res: Response) => {
 
     if (isTeacher) {
       query.school = schoolName;
+      query.role = role || 'student';
     } else if (role) {
       query.role = role;
+    } else {
+      query.role = 'student'; // Admin defaults to seeing all students
     }
 
     if (school && !isTeacher) query.school = new RegExp(school as string, 'i');
@@ -304,22 +333,46 @@ export const getUsers = async (req: Request, res: Response) => {
 
     const total = await User.countDocuments(query);
 
-    // Get progress stats for each user
+    // Get detailed module progress
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
-        const progress = await UserProgress.find({ userId: user._id });
-        const completedModules = progress.filter(p => p.status === 'completed').length;
-        const drillSessions = await DrillSession.countDocuments({
-          userId: user._id,
-          isCompleted: true
-        });
+        const detailedProgress = await UserProgress.aggregate([
+          { $match: { userId: user._id.toString() } },
+          {
+            $addFields: {
+              moduleIdObj: { $toObjectId: '$moduleId' }
+            }
+          },
+          {
+            $lookup: {
+              from: 'disastermodules',
+              localField: 'moduleIdObj',
+              foreignField: '_id',
+              as: 'module'
+            }
+          },
+          { $unwind: '$module' },
+          {
+            $project: {
+              moduleTitle: '$module.title',
+              status: 1,
+              score: 1,
+              completedAt: 1
+            }
+          }
+        ]);
+
+        const completedModulesCount = detailedProgress.filter(p => p.status === 'completed').length;
+        const totalScore = detailedProgress.reduce((sum, p) => sum + (p.score || 0), 0);
+        const averageScore = completedModulesCount > 0 ? Math.round(totalScore / completedModulesCount) : 0;
 
         return {
           ...user.toObject(),
           stats: {
-            completedModules,
-            drillSessions,
-            totalProgress: progress.length
+            completedModules: completedModulesCount,
+            averageScore,
+            totalProgress: detailedProgress.length,
+            detailedProgress
           }
         };
       })
@@ -384,6 +437,7 @@ export const updateUserStatus = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const getPreparednessScores = async (req: Request, res: Response) => {
   try {
+    const { school, grade, district, moduleType } = req.query;
     const isTeacher = (req as any).user.role === 'teacher';
     const teacherSchool = (req as any).user.school;
 
@@ -803,51 +857,35 @@ export const getAllVideosAdmin = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const addVideoToModule = async (req: Request, res: Response) => {
   try {
-    const { moduleId, video } = req.body;
-
-    if (!moduleId || !video) {
-      return res.status(400).json({
-        success: false,
-        message: 'Module ID and video data are required'
-      });
-    }
-
+    const { moduleId, title, url, description, duration } = req.body;
     const module = await DisasterModule.findById(moduleId);
+
     if (!module) {
-      return res.status(404).json({
-        success: false,
-        message: 'Module not found'
-      });
+      return res.status(404).json({ success: false, message: 'Module not found' });
     }
 
-    // Generate unique video ID if not provided
-    if (!video.id) {
-      video.id = `${module.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    }
+    const newVideo = {
+      id: `v${Date.now()}`,
+      title,
+      url,
+      description,
+      duration
+    };
 
-    // Initialize videos array if it doesn't exist
-    if (!module.content.videos) {
-      module.content.videos = [];
-    }
+    if (!module.content) module.content = { videos: [] };
+    if (!module.content.videos) module.content.videos = [];
 
-    // Add the video
-    module.content.videos.push(video);
+    module.content.videos.push(newVideo);
     await module.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: 'Video added successfully',
-      data: {
-        moduleId: module._id,
-        video: video
-      }
+      data: newVideo
     });
   } catch (error) {
     console.error('Add video error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error adding video'
-    });
+    res.status(500).json({ success: false, message: 'Error adding video' });
   }
 };
 
@@ -857,62 +895,35 @@ export const addVideoToModule = async (req: Request, res: Response) => {
 export const updateVideoInModule = async (req: Request, res: Response) => {
   try {
     const { videoId } = req.params;
-    const { moduleId, videoData } = req.body;
+    const { moduleId, title, url, description, duration } = req.body;
 
-    // Find the module containing the video
-    let targetModule = null;
-    if (moduleId) {
-      targetModule = await DisasterModule.findById(moduleId);
-    } else {
-      // Search all modules for the video
-      const modules = await DisasterModule.find();
-      for (const module of modules) {
-        if (module.content?.videos?.some((v: any) => v.id === videoId)) {
-          targetModule = module;
-          break;
-        }
-      }
+    const module = await DisasterModule.findById(moduleId);
+    if (!module) {
+      return res.status(404).json({ success: false, message: 'Module not found' });
     }
 
-    if (!targetModule) {
-      return res.status(404).json({
-        success: false,
-        message: 'Module or video not found'
-      });
+    const videoIndex = module.content?.videos?.findIndex((v: any) => v.id === videoId);
+    if (videoIndex === undefined || videoIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Video not found' });
     }
 
-    // Find and update the video
-    const videoIndex = targetModule.content.videos.findIndex((v: any) => v.id === videoId);
-    if (videoIndex === -1) {
-      return res.status(404).json({
-        success: false,
-        message: 'Video not found'
-      });
-    }
-
-    // Update the video
-    targetModule.content.videos[videoIndex] = {
-      ...targetModule.content.videos[videoIndex],
-      ...videoData,
-      id: videoId // Preserve the original ID
+    module.content!.videos![videoIndex] = {
+      ...module.content!.videos![videoIndex],
+      title,
+      url,
+      description,
+      duration
     };
 
-    await targetModule.save();
+    await module.save();
 
     res.status(200).json({
       success: true,
-      message: 'Video updated successfully',
-      data: {
-        moduleId: targetModule._id,
-        video: targetModule.content.videos[videoIndex]
-      }
+      message: 'Video updated successfully'
     });
   } catch (error) {
     console.error('Update video error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error updating video'
-    });
+    res.status(500).json({ success: false, message: 'Error updating video' });
   }
 };
 
@@ -921,29 +932,23 @@ export const updateVideoInModule = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const deleteVideoFromModule = async (req: Request, res: Response) => {
   try {
+    // Note: This needs the moduleId to find the right module
     const { videoId } = req.params;
+    const { moduleId } = req.query;
 
-    // Find the module containing the video
-    const modules = await DisasterModule.find();
-    let targetModule = null;
-
-    for (const module of modules) {
-      if (module.content?.videos?.some((v: any) => v.id === videoId)) {
-        targetModule = module;
-        break;
-      }
+    if (!moduleId) {
+      return res.status(400).json({ success: false, message: 'Module ID is required' });
     }
 
-    if (!targetModule) {
-      return res.status(404).json({
-        success: false,
-        message: 'Video not found'
-      });
+    const module = await DisasterModule.findById(moduleId);
+    if (!module) {
+      return res.status(404).json({ success: false, message: 'Module not found' });
     }
 
-    // Remove the video
-    targetModule.content.videos = targetModule.content.videos.filter((v: any) => v.id !== videoId);
-    await targetModule.save();
+    if (module.content?.videos) {
+      module.content.videos = module.content.videos.filter((v: any) => v.id !== videoId);
+      await module.save();
+    }
 
     res.status(200).json({
       success: true,
@@ -951,9 +956,6 @@ export const deleteVideoFromModule = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Delete video error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error deleting video'
-    });
+    res.status(500).json({ success: false, message: 'Error deleting video' });
   }
 };

@@ -23,8 +23,12 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
     setError('');
     try {
-      await login(formData);
-      navigate('/dashboard');
+      const response = await login(formData);
+      if (response.user.role === 'teacher' || response.user.role === 'admin') {
+        navigate('/teacher');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       const msg = (err.message || '').toLowerCase();
       if (msg.includes('invalid') || msg.includes('incorrect') || msg.includes('wrong')) {

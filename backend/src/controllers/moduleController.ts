@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import DisasterModule from '../models/DisasterModule';
 import UserProgress from '../models/UserProgress';
 import User from '../models/User';
+import Badge from '../models/Badge';
 
 interface AuthRequest extends Request {
   user?: any;
@@ -22,7 +23,7 @@ export const getModules = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 })
       .limit(Number(limit) * 1)
       .skip((Number(page) - 1) * Number(limit))
-      .select('-quiz.questions.correctAnswer'); // Don't send correct answers initially
+      .select('-quiz.questions.correctAnswer');
 
     const total = await DisasterModule.countDocuments(query);
 
@@ -48,7 +49,7 @@ export const getModules = async (req: Request, res: Response) => {
 export const getModule = async (req: Request, res: Response) => {
   try {
     const module = await DisasterModule.findById(req.params.id)
-      .select('-quiz.questions.correctAnswer'); // Don't send correct answers
+      .select('-quiz.questions.correctAnswer');
 
     if (!module) {
       return res.status(404).json({
@@ -79,7 +80,6 @@ export const startModule = async (req: AuthRequest, res: Response) => {
     const moduleId = req.params.id;
     const userId = req.user.id;
 
-    // Check if module exists
     const module = await DisasterModule.findById(moduleId);
     if (!module) {
       return res.status(404).json({
@@ -88,11 +88,9 @@ export const startModule = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Check if user progress already exists
     let progress = await UserProgress.findOne({ userId, moduleId });
 
     if (!progress) {
-      // Create new progress record
       progress = await UserProgress.create({
         userId,
         moduleId,
@@ -100,7 +98,6 @@ export const startModule = async (req: AuthRequest, res: Response) => {
         attempts: 1
       });
     } else {
-      // Update existing progress
       progress.status = 'in_progress';
       progress.attempts += 1;
       await progress.save();
@@ -117,7 +114,7 @@ export const startModule = async (req: AuthRequest, res: Response) => {
             ...module.quiz,
             questions: module.quiz.questions.map(q => ({
               ...q,
-              correctAnswer: undefined // Remove correct answer from response
+              correctAnswer: undefined
             }))
           }
         }
@@ -142,7 +139,6 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
     const userId = req.user.id;
     const { answers, timeSpent, clientResults } = req.body;
 
-    // Get module with correct answers
     const module = await DisasterModule.findById(moduleId);
     if (!module) {
       return res.status(404).json({
@@ -151,7 +147,6 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Get user progress
     let progress = await UserProgress.findOne({ userId, moduleId });
     if (!progress) {
       return res.status(400).json({
@@ -161,14 +156,13 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
     }
 
     let correctAnswers = 0;
-    let totalPoints = 0;
     let earnedPoints = 0;
+    let totalPoints = 0;
     let results: any[] = [];
     let score = 0;
     let passed = false;
 
     if (clientResults) {
-      // Use client-provided grading since questions are generated randomly on frontend
       score = clientResults.score;
       passed = clientResults.passed;
       correctAnswers = clientResults.correctAnswers;
@@ -176,7 +170,6 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
       totalPoints = clientResults.totalPoints;
       results = clientResults.results;
     } else {
-      // Fallback to legacy database evaluation
       results = module.quiz.questions.map((question: any) => {
         const userAnswer = answers[question.id];
         const isCorrect = userAnswer === question.correctAnswer;
@@ -210,21 +203,33 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
     progress.timeSpent += timeSpent || 0;
     await progress.save();
 
-    // Update user points if passed and not previously completed
-    let badgesEarned: any[] = [];
+    // Update user points and award badges if passed and not previously completed
+    let badgesEarned: string[] = [];
     if (passed && !wasAlreadyCompleted) {
       const user = await User.findById(userId);
       if (user) {
         user.points = (user.points || 0) + earnedPoints;
-        await user.save();
 
-        // Check for badges (simple implementation)
-        if (user.points >= 100 && !user.badges?.some(b => b.toString().includes('first'))) {
-          badgesEarned.push('first_completion');
+        // Persist badges earned
+        const allBadges = await Badge.find();
+
+        if (user.points >= 100) {
+          const firstStepsBadge = allBadges.find(b => b.name === 'First Steps');
+          if (firstStepsBadge && !user.badges.some(b => b.toString() === firstStepsBadge._id.toString())) {
+            user.badges.push(firstStepsBadge._id as any);
+            badgesEarned.push(firstStepsBadge.name);
+          }
         }
-        if (score === 100 && !user.badges?.some(b => b.toString().includes('perfect'))) {
-          badgesEarned.push('perfect_score');
+
+        if (score === 100) {
+          const perfectScoreBadge = allBadges.find(b => b.name === 'Perfect Score');
+          if (perfectScoreBadge && !user.badges.some(b => b.toString() === perfectScoreBadge._id.toString())) {
+            user.badges.push(perfectScoreBadge._id as any);
+            badgesEarned.push(perfectScoreBadge.name);
+          }
         }
+
+        await user.save();
       }
 
       // Update module completion count
@@ -269,10 +274,8 @@ export const getUserProgress = async (req: AuthRequest, res: Response) => {
     const query: any = { userId };
     if (status) query.status = status;
 
-    // moduleId is stored as String so populate() doesn't work - do a manual join
     const progress = await UserProgress.find(query).sort({ updatedAt: -1 });
 
-    // Fetch module titles for each unique moduleId
     const moduleIds = [...new Set(progress.map(p => p.moduleId))];
     let moduleMap: Record<string, any> = {};
     if (moduleIds.length > 0) {
@@ -326,11 +329,8 @@ export const rateModule = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // A simple rolling average approximation
     const currentRating = module.ratings || 0;
     const currentCompletions = module.completions || 1;
-
-    // Smooth the update curve to prevent one rating from drastically shifting it
     const newRating = ((currentRating * currentCompletions) + rating) / (currentCompletions + 1);
 
     module.ratings = Number(newRating.toFixed(1));

@@ -232,8 +232,9 @@ export interface DashboardAnalytics {
   overview: {
     totalUsers: number;
     totalModules: number;
-    totalDrillSessions: number;
+    totalVirtualDrills: number;
     totalBadges: number;
+    schoolAverageScore?: number;
   };
   userDistribution: {
     byRole: Array<{ _id: string; count: number }>;
@@ -264,6 +265,13 @@ export interface DashboardAnalytics {
     totalStudents: number;
     totalPoints: number;
     averagePoints: number;
+  }>;
+  topStudents?: Array<{
+    _id: string;
+    name: string;
+    points: number;
+    grade: number;
+    school: string;
   }>;
   recentActivity: {
     newUsers: number;

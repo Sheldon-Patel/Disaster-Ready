@@ -811,41 +811,41 @@ VirtualDrillSchema.index({ 'validation.expertReview.approved': 1 });
 VirtualDrillSchema.index({ tags: 1 });
 
 // Virtual for total evacuation time
-VirtualDrillSchema.virtual('totalEvacuationTime').get(function(this: IVirtualDrillDocument) {
+VirtualDrillSchema.virtual('totalEvacuationTime').get(function (this: IVirtualDrillDocument) {
   return this.duration.estimated * 60; // convert minutes to seconds
 });
 
 // Methods
-VirtualDrillSchema.methods.calculateDifficulty = function(): string {
+VirtualDrillSchema.methods.calculateDifficulty = function (): string {
   let score = 0;
-  
+
   // Factors affecting difficulty
   if (this.participants.maximum > 100) score += 20;
   if (this.buildingLayout.floors.length > 2) score += 15;
   if (this.scenario.disasterDetails.intensity === 'high' || this.scenario.disasterDetails.intensity === 'critical') score += 25;
   if (this.duration.maximum < 10) score += 20; // tight time constraints
-  
+
   if (score >= 60) return 'expert';
   if (score >= 40) return 'advanced';
   if (score >= 20) return 'intermediate';
   return 'beginner';
 };
 
-VirtualDrillSchema.methods.validateSafety = async function(): Promise<boolean> {
+VirtualDrillSchema.methods.validateSafety = async function (): Promise<boolean> {
   // Check if evacuation routes are safe and accessible
   const routes = this.buildingLayout.floors.flatMap(floor => floor.evacuationRoutes);
   const assemblyPoints = this.buildingLayout.assemblyPoints;
-  
+
   // Basic validation
   return routes.length > 0 && assemblyPoints.length > 0;
 };
 
-VirtualDrillSchema.methods.getOptimalRoutes = async function(): Promise<IEvacuationStep[][]> {
+VirtualDrillSchema.methods.getOptimalRoutes = async function (): Promise<IEvacuationStep[][]> {
   // Calculate optimal evacuation routes based on capacity and time
-  const routes = this.buildingLayout.floors.flatMap(floor => 
+  const routes = this.buildingLayout.floors.flatMap(floor =>
     floor.evacuationRoutes.map(route => route.steps)
   );
-  
+
   // Sort by estimated time and capacity
   return routes.sort((a, b) => {
     const timeA = a.reduce((sum, step) => sum + step.estimatedTime, 0);
@@ -1052,18 +1052,18 @@ DrillSessionSchema.index({ schoolId: 1, status: 1 });
 DrillSessionSchema.index({ 'instructor.userId': 1 });
 
 // Methods for drill session
-DrillSessionSchema.methods.calculateOverallScore = async function(): Promise<number> {
+DrillSessionSchema.methods.calculateOverallScore = async function (): Promise<number> {
   const participantScores = this.participants.map(p => p.score).filter(score => score > 0);
   if (participantScores.length === 0) return 0;
-  
+
   const average = participantScores.reduce((sum, score) => sum + score, 0) / participantScores.length;
   this.results.overallScore = Math.round(average);
   return this.results.overallScore;
 };
 
-DrillSessionSchema.methods.updateParticipantPosition = async function(userId: string, position: I3DCoordinate): Promise<void> {
+DrillSessionSchema.methods.updateParticipantPosition = async function (userId: string, position: I3DCoordinate): Promise<void> {
   const participantIndex = this.realTimeData.participantPositions.findIndex(p => p.userId === userId);
-  
+
   if (participantIndex >= 0) {
     this.realTimeData.participantPositions[participantIndex].position = position;
     this.realTimeData.participantPositions[participantIndex].lastUpdate = new Date();
@@ -1074,9 +1074,9 @@ DrillSessionSchema.methods.updateParticipantPosition = async function(userId: st
       lastUpdate: new Date()
     });
   }
-  
+
   await this.save();
 };
 
 export const VirtualDrill = mongoose.model<IVirtualDrillDocument>('VirtualDrill', VirtualDrillSchema);
-export const DrillSession = mongoose.model<IDrillSessionDocument>('DrillSession', DrillSessionSchema);
+export const VirtualDrillSession = mongoose.model<IDrillSessionDocument>('VirtualDrillSession', DrillSessionSchema);
