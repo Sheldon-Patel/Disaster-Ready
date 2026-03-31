@@ -3,6 +3,7 @@ import VideoPlayer from '../common/VideoPlayer';
 
 interface Video {
   id: string;
+  moduleId: string;
   title: string;
   description: string;
   url: string;
@@ -20,11 +21,11 @@ const VideoManagement: React.FC = () => {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [filterModule, setFilterModule] = useState<string>('all');
+  const [filterModuleId, setFilterModuleId] = useState<string>('all');
   const [filterSection, setFilterSection] = useState<string>('all');
   const [availableModules, setAvailableModules] = useState<any[]>([]);
 
-  const moduleTypes = ['earthquake', 'flood', 'fire', 'cyclone', 'heatwave', 'drought'];
+  const moduleTypes = ['earthquake', 'flood', 'fire', 'cyclone', 'drought', 'heatwave', 'tornado', 'gas_leak', 'building_collapse'];
   const sections = ['introduction', 'preventionMeasures', 'duringDisaster', 'afterDisaster'];
 
   useEffect(() => {
@@ -71,6 +72,7 @@ const VideoManagement: React.FC = () => {
         // Transform API data to match component interface
         const transformedVideos: Video[] = data.data.map((video: any) => ({
           id: video.id,
+          moduleId: video.moduleId,
           title: video.title,
           description: video.description,
           url: video.url,
@@ -92,67 +94,13 @@ const VideoManagement: React.FC = () => {
       console.error('❌ Error fetching videos from API:', error);
     }
 
-    // Fallback to mock data if API fails
-    console.log('⚠️ Falling back to mock data');
-    const mockVideos: Video[] = [
-      {
-        id: 'eq_intro',
-        title: 'Understanding Earthquakes',
-        description: 'Learn about seismic zones and earthquake basics',
-        url: 'https://drive.google.com/file/d/1IvvzBzqFJREmavk76DJDf_o9RGCFCKGV/preview',
-        thumbnail: '/images/thumbnails/earthquake-intro.jpg',
-        duration: 180,
-        section: 'introduction',
-        moduleType: 'earthquake',
-        isActive: true,
-        uploadDate: '2024-01-06'
-      },
-      {
-        id: 'eq_prep',
-        title: 'Earthquake Preparedness',
-        description: 'Demonstration of proper earthquake preparedness',
-        url: 'https://drive.google.com/file/d/1fN26W_g5PFbRhIQsJkyKZyq2t_-Vw6zD/preview',
-        thumbnail: '/images/thumbnails/drop-cover-hold.jpg',
-        duration: 120,
-        section: 'preventionMeasures',
-        moduleType: 'earthquake',
-        isActive: true,
-        uploadDate: '2024-01-05'
-      },
-      {
-        id: 'flood_intro',
-        title: 'Understanding Floods',
-        description: 'Learn about monsoon patterns and flood risks',
-        url: 'https://drive.google.com/file/d/1a8Si7dBIIxomcfXVKr_iK4ISdOMzy2Fn/preview',
-        thumbnail: '/images/thumbnails/flood-intro.jpg',
-        duration: 200,
-        section: 'introduction',
-        moduleType: 'flood',
-        isActive: true,
-        uploadDate: '2024-01-04'
-      },
-      {
-        id: 'fire_intro',
-        title: 'Fire Prevention and Preparedness',
-        description: 'Learn how to prevent fires before they start',
-        url: 'https://drive.google.com/file/d/1tBhvfnK2_T5OgbhF0pEGcJwKu1Wf1hng/preview',
-        thumbnail: '/images/thumbnails/fire-prevention.jpg',
-        duration: 240,
-        section: 'preventionMeasures',
-        moduleType: 'fire',
-        isActive: true,
-        uploadDate: '2024-01-03'
-      }
-    ];
-
-    setTimeout(() => {
-      setVideos(mockVideos);
-      setIsLoading(false);
-    }, 1000);
+    // If API fails, we don't fall back to mock data anymore to avoid confusion
+    setVideos([]);
+    setIsLoading(false);
   };
 
   const filteredVideos = videos.filter(video => {
-    const moduleMatch = filterModule === 'all' || video.moduleType === filterModule;
+    const moduleMatch = filterModuleId === 'all' || video.moduleId === filterModuleId;
     const sectionMatch = filterSection === 'all' || video.section === filterSection;
     return moduleMatch && sectionMatch;
   });
@@ -171,8 +119,11 @@ const VideoManagement: React.FC = () => {
     }
 
     try {
+      const videoToDelete = videos.find(v => v.id === videoId);
+      if (!videoToDelete) return;
+
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/admin/videos/${videoId}`, {
+      const response = await fetch(`http://localhost:5000/api/admin/videos/${videoId}?moduleId=${videoToDelete.moduleId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -215,6 +166,9 @@ const VideoManagement: React.FC = () => {
       case 'cyclone': return '🌪️';
       case 'heatwave': return '🌡️';
       case 'drought': return '☀️';
+      case 'tornado': return '🌪️';
+      case 'gas_leak': return '⛽';
+      case 'building_collapse': return '🏗️';
       default: return '⚠️';
     }
   };
@@ -251,16 +205,16 @@ const VideoManagement: React.FC = () => {
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Module Type</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Module</label>
             <select
-              value={filterModule}
-              onChange={(e) => setFilterModule(e.target.value)}
+              value={filterModuleId}
+              onChange={(e) => setFilterModuleId(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               <option value="all">All Modules</option>
-              {moduleTypes.map(type => (
-                <option key={type} value={type}>
-                  {getModuleIcon(type)} {type.charAt(0).toUpperCase() + type.slice(1)}
+              {availableModules.map(module => (
+                <option key={module._id} value={module._id}>
+                  {getModuleIcon(module.type)} {module.title}
                 </option>
               ))}
             </select>
@@ -461,7 +415,7 @@ const VideoManagement: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500">Total Modules</p>
-              <p className="text-2xl font-semibold text-gray-900">{new Set(videos.map(v => v.moduleType)).size}</p>
+              <p className="text-2xl font-semibold text-gray-900">{availableModules.length}</p>
             </div>
           </div>
         </div>
@@ -490,6 +444,7 @@ const VideoManagement: React.FC = () => {
           onClose={() => setShowAddModal(false)}
           onVideoAdded={(newVideo) => {
             setVideos([...videos, newVideo]);
+            setSelectedVideo(newVideo); // Polish: Select the new video
             setShowAddModal(false);
           }}
         />
@@ -532,14 +487,12 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ modules, onClose, onVideo
 
       const videoData = {
         moduleId: formData.moduleId,
-        video: {
-          title: formData.title,
-          description: formData.description,
-          url: formData.url,
-          thumbnail: formData.thumbnail || `https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500`,
-          duration: formData.duration,
-          section: formData.section
-        }
+        title: formData.title,
+        description: formData.description,
+        url: formData.url,
+        thumbnail: formData.thumbnail || `https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500`,
+        duration: formData.duration,
+        section: formData.section
       };
 
       const response = await fetch('http://localhost:5000/api/admin/videos', {
@@ -557,6 +510,7 @@ const AddVideoModal: React.FC<AddVideoModalProps> = ({ modules, onClose, onVideo
 
         const newVideo: Video = {
           id: result.data.video.id,
+          moduleId: formData.moduleId,
           title: result.data.video.title,
           description: result.data.video.description,
           url: result.data.video.url,

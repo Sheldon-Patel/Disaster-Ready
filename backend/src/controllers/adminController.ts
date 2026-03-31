@@ -819,23 +819,31 @@ export const deleteModuleAdmin = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const getAllVideosAdmin = async (req: Request, res: Response) => {
   try {
-    const modules = await DisasterModule.find().select('_id title type content.videos');
+    const modules = await DisasterModule.find()
+      .select('_id title type content.videos')
+      .lean();
 
     // Flatten all videos from all modules
     const allVideos: any[] = [];
 
-    modules.forEach(module => {
-      if (module.content?.videos) {
-        module.content.videos.forEach((video: any) => {
-          allVideos.push({
-            ...video,
-            moduleId: module._id,
-            moduleTitle: module.title,
-            moduleType: module.type,
-            isActive: true // Default to active
-          });
+    modules.forEach((module: any) => {
+      const videos = module.content?.videos || [];
+
+      videos.forEach((video: any) => {
+        allVideos.push({
+          id: video.id,
+          title: video.title,
+          url: video.url,
+          description: video.description,
+          duration: video.duration,
+          section: video.section,
+          thumbnail: video.thumbnail,
+          moduleId: module._id.toString(),
+          moduleTitle: module.title,
+          moduleType: module.type,
+          isActive: video.isActive !== undefined ? video.isActive : true
         });
-      }
+      });
     });
 
     res.status(200).json({
@@ -857,7 +865,7 @@ export const getAllVideosAdmin = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const addVideoToModule = async (req: Request, res: Response) => {
   try {
-    const { moduleId, title, url, description, duration } = req.body;
+    const { moduleId, title, url, description, duration, section, thumbnail } = req.body;
     const module = await DisasterModule.findById(moduleId);
 
     if (!module) {
@@ -869,19 +877,23 @@ export const addVideoToModule = async (req: Request, res: Response) => {
       title,
       url,
       description,
-      duration
+      duration,
+      section,
+      thumbnail
     };
 
     if (!module.content) module.content = { videos: [] };
     if (!module.content.videos) module.content.videos = [];
 
-    module.content.videos.push(newVideo);
+    module.content.videos.push(newVideo as any);
     await module.save();
 
     res.status(200).json({
       success: true,
       message: 'Video added successfully',
-      data: newVideo
+      data: {
+        video: newVideo
+      }
     });
   } catch (error) {
     console.error('Add video error:', error);
@@ -895,7 +907,7 @@ export const addVideoToModule = async (req: Request, res: Response) => {
 export const updateVideoInModule = async (req: Request, res: Response) => {
   try {
     const { videoId } = req.params;
-    const { moduleId, title, url, description, duration } = req.body;
+    const { moduleId, title, url, description, duration, section, thumbnail } = req.body;
 
     const module = await DisasterModule.findById(moduleId);
     if (!module) {
@@ -912,7 +924,9 @@ export const updateVideoInModule = async (req: Request, res: Response) => {
       title,
       url,
       description,
-      duration
+      duration,
+      section: section || module.content!.videos![videoIndex].section,
+      thumbnail: thumbnail || module.content!.videos![videoIndex].thumbnail
     };
 
     await module.save();
