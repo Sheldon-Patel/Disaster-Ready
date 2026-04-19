@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://admin123:admin123@cluster0.bpby1cf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb link";
 
 async function runMigration() {
     const client = new MongoClient(uri);
