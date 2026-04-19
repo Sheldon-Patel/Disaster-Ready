@@ -41,26 +41,15 @@ export const seedEarthquakeModule = async () => {
           'Keep important documents in waterproof containers'
         ],
 
-        duringDisaster: [
-          'DROP to hands and knees immediately when you feel shaking',
-          'Take COVER under a sturdy desk, table, or against an interior wall',
-          'HOLD ON to your shelter and protect your head and neck with your arms',
-          'Stay where you are until shaking stops - do not run outside during shaking',
-          'If outdoors, move away from buildings, trees, and power lines',
-          'If in a vehicle, stop safely and stay inside until shaking stops',
-          'If in bed, stay there and cover your head with a pillow'
-        ],
-
         afterDisaster: [
-          'Check yourself and others for injuries and provide first aid if needed',
-          'Inspect your surroundings for hazards like gas leaks, electrical damage, or structural damage',
-          'Use stairs, never elevators, when evacuating multi-story buildings',
-          'Stay out of damaged buildings and watch for aftershocks',
-          'Listen to emergency broadcasts on radio for official information',
-          'Contact family and friends to let them know you are safe',
-          'Avoid using telephone except for emergencies to keep lines open',
-          'Take photos of damage for insurance purposes',
-          'Cooperate with public safety officials and follow their instructions'
+          'Check yourself and others for injuries — do not move seriously injured persons unless in immediate danger',
+          'Expect aftershocks — stay alert and be ready to drop and cover again',
+          'Do not re-enter damaged buildings until authorities declare them safe',
+          'Turn off gas, water, and electricity if you suspect damage or leaks',
+          'Check for structural damage such as cracks in walls, ceilings, or foundation before returning home',
+          'Document all damage with photos for insurance and government relief claims',
+          'Listen to emergency broadcasts for official updates and road conditions',
+          'Help neighbors, especially the elderly and disabled, to evacuate or access medical care'
         ],
 
         images: [
@@ -198,6 +187,92 @@ export const seedEarthquakeModule = async () => {
             correctAnswer: 2,
             explanation: 'Regular earthquake drills throughout the year help students and staff develop muscle memory for proper response.',
             points: 15
+          },
+          {
+            id: 'eq_q9',
+            question: 'What is the "Triangle of Life" theory?',
+            options: [
+              'A geometric way to build houses',
+              'A safety technique to find void spaces near solid objects',
+              'A type of emergency kit',
+              'A method to measure earthquake magnitude'
+            ],
+            correctAnswer: 1,
+            explanation: 'The Triangle of Life suggests finding void spaces near solid objects where a "triangle" might form during a collapse, though "Drop, Cover, and Hold On" remains the standard recommendation.',
+            points: 10
+          },
+          {
+            id: 'eq_q10',
+            question: 'Which of these should NOT be used during an earthquake?',
+            options: ['Stairs', 'Elevators', 'Whistles', 'Flashlights'],
+            correctAnswer: 1,
+            explanation: 'Never use elevators during an earthquake as power may fail, trapping you inside.',
+            points: 10
+          },
+          {
+            id: 'eq_q11',
+            question: 'If you are outdoors during an earthquake, where is the safest place to be?',
+            options: [
+              'Under a tree',
+              'Near a tall building',
+              'In an open area away from buildings and power lines',
+              'Under a bridge'
+            ],
+            correctAnswer: 2,
+            explanation: 'Open areas are safest as they minimize the risk of being hit by falling debris, glass, or power lines.',
+            points: 15
+          },
+          {
+            id: 'eq_q12',
+            question: 'What does "Drop" mean in the safety technique?',
+            options: [
+              'Drop your belongings',
+              'Drop to your hands and knees',
+              'Drop to a lying position',
+              'Drop items from your hands'
+            ],
+            correctAnswer: 1,
+            explanation: '"Drop" means getting to your hands and knees to prevent being knocked over and to stay mobile.',
+            points: 10
+          },
+          {
+            id: 'eq_q13',
+            question: 'What should you do if you are in a vehicle during an earthquake?',
+            options: [
+              'Speed up to get home',
+              'Stop in a clear area and stay inside the vehicle',
+              'Jump out and run',
+              'Stop under an overpass'
+            ],
+            correctAnswer: 1,
+            explanation: 'Pull over to a clear area away from buildings, trees, and overpasses, and stay inside until the shaking stops.',
+            points: 15
+          },
+          {
+            id: 'eq_q14',
+            question: 'Why is it important to have a whistle in your emergency kit?',
+            options: [
+              'To keep children entertained',
+              'To signal for help if you are trapped',
+              'To scare away animals',
+              'To communicate with neighbors'
+            ],
+            correctAnswer: 1,
+            explanation: 'A whistle is a very effective way to signal rescuers if you are trapped, requiring less energy and oxygen than shouting.',
+            points: 10
+          },
+          {
+            id: 'eq_q15',
+            question: 'Which government body in India provides earthquake alerts and information?',
+            options: [
+              'Indian Railways',
+              'National Disaster Management Authority (NDMA)',
+              'Finance Ministry',
+              'Sports Authority'
+            ],
+            correctAnswer: 1,
+            explanation: 'The NDMA is the apex body for disaster management in India, providing guidelines and alerts for earthquakes.',
+            points: 10
           }
         ]
       }
@@ -443,25 +518,15 @@ export const seedFloodModule = async () => {
           'Keep important documents in waterproof containers'
         ],
 
-        duringDisaster: [
-          'Move to higher ground immediately when flooding begins',
-          'Never walk, swim, or drive through flood waters',
-          'If trapped in a building, go to the highest level',
-          'If trapped in a car, abandon it and move to higher ground',
-          'Stay away from downed power lines and electrical wires',
-          'Listen to emergency broadcasts for evacuation orders',
-          'Call for help only if life is in immediate danger'
-        ],
-
         afterDisaster: [
-          'Wait for authorities to declare areas safe before returning',
-          'Avoid walking in moving water and standing water',
-          'Check for structural damage before entering buildings',
-          'Do not use electrical appliances that have been wet',
-          'Throw away food that has come into contact with flood water',
-          'Clean and disinfect everything that got wet',
-          'Take photos of damage for insurance claims',
-          'Seek medical attention for any injuries or illnesses'
+          'Wait for official all-clear before returning home — floodwaters may still be dangerous',
+          'Do not walk or drive through floodwater — just 15 cm can knock down an adult',
+          'Document all flood damage with photos and videos for insurance claims',
+          'Discard food that has come into contact with floodwater — it is unsafe to eat',
+          'Clean and disinfect all surfaces that floodwater touched to prevent disease spread',
+          'Have your home inspected for structural damage, electrical hazards, and gas leaks before re-entering',
+          'Boil water until authorities confirm the tap supply is safe to drink',
+          'Report any downed power lines or broken gas pipes to emergency services immediately'
         ],
 
         images: [
@@ -511,6 +576,165 @@ export const seedFloodModule = async () => {
             correctAnswer: 2,
             explanation: 'Abandon the car and move to higher ground immediately.',
             points: 15
+          },
+          {
+            id: 'flood_q3',
+            question: 'What is a Flash Flood?',
+            options: [
+              'A flood that lasts for weeks',
+              'A rapid flooding of low-lying areas in less than six hours',
+              'A flood caused by melting snow',
+              'A flood that only happens at night'
+            ],
+            correctAnswer: 1,
+            explanation: 'Flash floods are rapid flooding incidents that can occur within minutes or hours of heavy rainfall.',
+            points: 10
+          },
+          {
+            id: 'flood_q4',
+            question: 'Which of these is a safe source of drinking water during a flood?',
+            options: [
+              'Flood water',
+              'Tap water without boiling',
+              'Bottled water or boiled water',
+              'Water from a well'
+            ],
+            correctAnswer: 2,
+            explanation: 'Flood waters are often contaminated. Only drink bottled water or water that has been properly boiled/treated.',
+            points: 15
+          },
+          {
+            id: 'flood_q5',
+            question: 'What should you do with electrical appliances before a flood hits?',
+            options: [
+              'Leave them plugged in',
+              'Unplug and move them to higher ground if possible',
+              'Turn them on to keep them warm',
+              'Put them in the basement'
+            ],
+            correctAnswer: 1,
+            explanation: 'Unplugging and elevating appliances prevents electrical hazards and damage.',
+            points: 10
+          },
+          {
+            id: 'flood_q6',
+            question: 'Why is it dangerous to walk through flood water?',
+            options: [
+              'You might get wet',
+              'Hazards like open drains, snakes, and electric wires may be hidden',
+              'It makes your clothes dirty',
+              'Traffic might be slow'
+            ],
+            correctAnswer: 1,
+            explanation: 'Flood waters can hide dangerous debris, open manholes, displaced animals, and downed power lines.',
+            points: 15
+          },
+          {
+            id: 'flood_q7',
+            question: 'What is the "Turn Around, Don\'t Drown" rule?',
+            options: [
+              'Swim against the current',
+              'Never drive or walk through flood waters',
+              'Rotate your car if caught in water',
+              'Wait for the water to turn'
+            ],
+            correctAnswer: 1,
+            explanation: 'This rule emphasizes that you should never enter flood waters, as they are often deeper and stronger than they look.',
+            points: 15
+          },
+          {
+            id: 'flood_q8',
+            question: 'Where should you go if flood waters start rising while you are indoors?',
+            options: [
+              'To the basement',
+              'To the highest floor or roof',
+              'Under the bed',
+              'Into the kitchen'
+            ],
+            correctAnswer: 1,
+            explanation: 'Move to the highest point in the building to stay above the rising water.',
+            points: 15
+          },
+          {
+            id: 'flood_q9',
+            question: 'What should you do if you come into contact with flood water?',
+            options: [
+              'Nothing, it is just water',
+              'Wash with soap and clean water as soon as possible',
+              'Wait for it to dry',
+              'Apply oil'
+            ],
+            correctAnswer: 1,
+            explanation: 'Flood water is often contaminated with sewage and chemicals. Washing helps prevent skin infections and illness.',
+            points: 10
+          },
+          {
+            id: 'flood_q10',
+            question: 'What is a "Flood Watch"?',
+            options: [
+              'A flood is happening right now',
+              'Conditions are favorable for flooding in the area',
+              'A flood has passed',
+              'A search for flood victims'
+            ],
+            correctAnswer: 1,
+            explanation: 'A watch means you should stay alert as flooding is possible.',
+            points: 10
+          },
+          {
+            id: 'flood_q11',
+            question: 'Which season in India poses the highest flood risk?',
+            options: ['Winter', 'Summer', 'Monsoon (July-Sept)', 'Spring'],
+            correctAnswer: 2,
+            explanation: 'The monsoon season brings heavy rains that lead to river overflow and flash floods across India.',
+            points: 10
+          },
+          {
+            id: 'flood_q12',
+            question: 'How much water can float most cars?',
+            options: ['6 inches', '1 foot (12 inches)', '2 feet', '5 feet'],
+            correctAnswer: 1,
+            explanation: 'Just 12 inches of rushing water can float many cars; 2 feet can carry away most vehicles.',
+            points: 15
+          },
+          {
+            id: 'flood_q13',
+            question: 'What is the best way to prevent water-borne diseases after a flood?',
+            options: [
+              'Wear a mask',
+              'Drink only purified or boiled water',
+              'Stay indoors',
+              'Eat more vegetables'
+            ],
+            correctAnswer: 1,
+            explanation: 'Contaminated water is the primary cause of post-flood diseases like cholera and typhoid.',
+            points: 15
+          },
+          {
+            id: 'flood_q14',
+            question: 'What should you do if you see a downed power line in flood water?',
+            options: [
+              'Call 101 and stay far away',
+              'Try to move it with a stick',
+              'Walk around it carefully',
+              'Ignore it'
+            ],
+            correctAnswer: 0,
+            explanation: 'Water conducts electricity. Stay far away from power lines in water and report it to authorities.',
+            points: 15
+          },
+          {
+            id: 'flood_q15',
+            question: 'What belongs in a flood emergency kit?',
+            options: [
+              'Television and speakers',
+              'Waterproof bags, flashlight, radio, first aid, and clean water',
+              'Heavy blankets and winter coats',
+              'Garden tools'
+            ],
+            correctAnswer: 1,
+            explanation: 'Essential items for a flood kit prioritize communication, light, first aid, and dry storage for documents.',
+            points: 10
           }
         ]
       }
@@ -562,24 +786,15 @@ export const seedFireModule = async () => {
           'Establish a family meeting point outside the home'
         ],
 
-        duringDisaster: [
-          'Alert others by shouting "FIRE!" and activating fire alarms',
-          'Evacuate immediately using the nearest safe exit',
-          'Stay low to avoid smoke - crawl if necessary',
-          'Feel doors with the back of your hand before opening',
-          'If clothes catch fire: Stop, Drop, and Roll',
-          'Once outside, go to your meeting point and call 101',
-          'Never use elevators during a fire emergency'
-        ],
-
         afterDisaster: [
-          'Do not re-enter the building until fire officials say it\'s safe',
-          'Contact family members and let them know you\'re safe',
-          'Seek medical attention for any burns or smoke inhalation',
-          'Contact insurance company to report the fire',
-          'Take photos of damage for insurance claims',
-          'Find temporary shelter if your home is damaged',
-          'Keep receipts for any expenses related to the fire'
+          'Do NOT re-enter a burned building until fire department confirms it is safe',
+          'Call your insurer and document all damage with photos before starting cleanup',
+          'Be aware of hidden hotspots — fires can reignite hours after being extinguished',
+          'Wear an N95 mask and gloves when entering fire-damaged areas due to toxic ash and debris',
+          'Discard all food, beverages, and medicines exposed to heat, smoke, or soot',
+          'Have electrical, gas, and plumbing inspected before reconnecting utilities',
+          'Contact the local municipality for information on debris removal assistance',
+          'Seek mental health support — fire trauma can have lasting psychological effects'
         ],
 
         images: [
@@ -637,6 +852,150 @@ export const seedFireModule = async () => {
             options: ['Run for help', 'Stop, Drop, and Roll', 'Pour water on yourself', 'Remove clothing quickly'],
             correctAnswer: 1,
             explanation: 'Stop, Drop, and Roll to smother the flames.',
+            points: 15
+          },
+          {
+            id: 'fire_q3',
+            question: 'What is the most common cause of fire-related deaths?',
+            options: ['Burns', 'Smoke inhalation', 'Falling debris', 'Panic'],
+            correctAnswer: 1,
+            explanation: 'Most fire victims die from breathing in toxic smoke and gases, not from actual burns.',
+            points: 10
+          },
+          {
+            id: 'fire_q4',
+            question: 'Why should you stay low to the ground in a smoke-filled room?',
+            options: [
+              'Because you can crawl faster',
+              'To avoid being seen',
+              'Smoke and heat rise, leaving cleaner air near the floor',
+              'To find your way better'
+            ],
+            correctAnswer: 2,
+            explanation: 'Cleaner, breathable air is found closer to the floor because smoke and toxic gases are warmer than air and rise.',
+            points: 15
+          },
+          {
+            id: 'fire_q5',
+            question: 'What should you do before opening a door during a fire?',
+            options: [
+              'Check for smoke under the door',
+              'Touch the door or handle with the back of your hand to check for heat',
+              'Lock the door',
+              'Shout for help'
+            ],
+            correctAnswer: 1,
+            explanation: 'If the door or handle is hot, fire is on the other side. Do not open it.',
+            points: 15
+          },
+          {
+            id: 'fire_q6',
+            question: 'How often should smoke alarm batteries be tested?',
+            options: ['Once a year', 'Once a month', 'Every 5 years', 'Only when they beep'],
+            correctAnswer: 1,
+            explanation: 'Testing smoke alarms monthly ensures they are working correctly in case of an actual emergency.',
+            points: 10
+          },
+          {
+            id: 'fire_q7',
+            question: 'What does the "P" in the PASS method for using a fire extinguisher stand for?',
+            options: ['Push the button', 'Pull the pin', 'Point at the fire', 'Press the handle'],
+            correctAnswer: 1,
+            explanation: 'The PASS method stands for Pull the pin, Aim at the base, Squeeze the handle, and Sweep from side to side.',
+            points: 15
+          },
+          {
+            id: 'fire_q8',
+            question: 'What is a fire assembly point?',
+            options: [
+              'A place where firefighters meet',
+              'Where fire trucks are parked',
+              'A safe designated area outside where everyone gathers after evacuation',
+              'The place where the fire started'
+            ],
+            correctAnswer: 2,
+            explanation: 'An assembly point allows everyone to be accounted for after an evacuation.',
+            points: 10
+          },
+          {
+            id: 'fire_q9',
+            question: 'What should you NOT use to put out a grease fire on a stove?',
+            options: ['A metal lid', 'Baking soda', 'Water', 'A fire blanket'],
+            correctAnswer: 2,
+            explanation: 'Never use water on a grease fire as it causes the oil to splatter and spread the fire instantly.',
+            points: 15
+          },
+          {
+            id: 'fire_q10',
+            question: 'What is the correct way to crawl in a smoky room?',
+            options: [
+              'On your stomach',
+              'On your hands and knees with head low',
+              'Running while stooped over',
+              'Walking normally'
+            ],
+            correctAnswer: 1,
+            explanation: 'Crawling on hands and knees keeps you under the hottest smoke and gives you better balance.',
+            points: 10
+          },
+          {
+            id: 'fire_q11',
+            question: 'If you are trapped in a room during a fire, what is the best way to signal for help?',
+            options: [
+              'Hide in a closet',
+              'Open a window and wave a bright cloth or use a flashlight',
+              'Keep the door open',
+              'Shout until you lose your voice'
+            ],
+            correctAnswer: 1,
+            explanation: 'Signaling from a window helps rescuers locate you without entering every room.',
+            points: 15
+          },
+          {
+            id: 'fire_q12',
+            question: 'What should you do if your primary exit is blocked by fire?',
+            options: [
+              'Wait for help',
+              'Use your designated secondary exit (e.g., another door or window)',
+              'Try to run through the flames',
+              'Call 101 and wait'
+            ],
+            correctAnswer: 1,
+            explanation: 'Always have two ways out of every room in your fire escape plan.',
+            points: 15
+          },
+          {
+            id: 'fire_q13',
+            question: 'Why should you never use an elevator during a fire?',
+            options: [
+              'It is too slow',
+              'It might get stuck if the power fails',
+              'Smoke can enter the elevator shaft',
+              'Both B and C'
+            ],
+            correctAnswer: 3,
+            explanation: 'Elevators can become traps if power is lost, and shafts can fill with smoke quickly.',
+            points: 10
+          },
+          {
+            id: 'fire_q14',
+            question: 'What is the number for Fire Emergency services in India?',
+            options: ['100', '101', '102', '108'],
+            correctAnswer: 1,
+            explanation: '101 is the standard emergency number for Fire services in India.',
+            points: 10
+          },
+          {
+            id: 'fire_q15',
+            question: 'Once you have safely evacuated a burning building, what should you do?',
+            options: [
+              'Go back for your phone',
+              'Wait at the assembly point and stay OUT',
+              'Go to a friend\'s house',
+              'Try to help put out the fire'
+            ],
+            correctAnswer: 1,
+            explanation: 'Never re-enter a burning building. Wait for professional firefighters to handle the situation.',
             points: 15
           }
         ]
@@ -699,24 +1058,16 @@ export const seedCycloneModule = async () => {
           'Know your evacuation zone and routes to higher ground'
         ],
 
-        duringDisaster: [
-          'Stay indoors and away from windows during the storm',
-          'If flooding occurs, move to the highest floor of your building',
-          'Avoid using electrical appliances during heavy rain and lightning',
-          'Do not go outside during the eye of the storm - winds will return',
-          'Listen to battery-powered radio for emergency updates',
-          'If you must evacuate, do so before conditions become dangerous',
-          'Stay in a small interior room on the lowest floor if winds are severe'
-        ],
-
+        duringDisaster: [],
         afterDisaster: [
-          'Wait for officials to declare the all-clear before going outside',
-          'Watch for fallen power lines, broken glass, and debris',
-          'Check on neighbors, especially elderly and disabled residents',
-          'Document damage with photos for insurance claims',
-          'Report power outages and downed lines to utilities',
-          'Boil water if advised by authorities due to contamination',
-          'Be patient - restoration of services may take several days'
+          'Stay inside until local authorities confirm it is safe to go outside',
+          'Watch for downed power lines, damaged buildings, and fallen trees before venturing out',
+          'Check for gas leaks — open windows and evacuate if you smell gas, then call emergency services',
+          'Document all damage thoroughly with photos for insurance and disaster relief claims',
+          'Do not use tap water until authorities confirm it is safe — pipes may be contaminated',
+          'Assist in community cleanup efforts using protective equipment like gloves and boots',
+          'Report any missing persons to local authorities or NDRF teams immediately',
+          'Check on neighbors, especially elderly persons who may need assistance'
         ],
 
         images: [
@@ -814,6 +1165,97 @@ export const seedCycloneModule = async () => {
             correctAnswer: 1,
             explanation: 'Loose outdoor objects can become deadly projectiles in cyclone-force winds. Secure or bring them inside before the storm arrives.',
             points: 10
+          },
+          {
+            id: 'cyclone_q9',
+            question: 'What is a "Cyclone Watch"?',
+            options: [
+              'A cyclone has been sighted',
+              'Conditions are favorable for a cyclone within 48 hours',
+              'The cyclone has passed',
+              'A search for storm victims'
+            ],
+            correctAnswer: 1,
+            explanation: 'A watch means you should stay alert as a cyclone is possible in your area.',
+            points: 10
+          },
+          {
+            id: 'cyclone_q10',
+            question: 'What should you do if you are caught outdoors during a cyclone?',
+            options: [
+              'Hide under a tree',
+              'Seek shelter in a sturdy building immediately',
+              'Run as fast as you can',
+              'Stay in an open field'
+            ],
+            correctAnswer: 1,
+            explanation: 'A sturdy building is the only safe place during a cyclone. Avoid trees or temporary structures.',
+            points: 15
+          },
+          {
+            id: 'cyclone_q11',
+            question: 'Why should you keep your emergency radio on during a cyclone?',
+            options: [
+              'To listen to music',
+              'To receive official updates and safety instructions',
+              'To signal your location',
+              'To keep the battery from dying'
+            ],
+            correctAnswer: 1,
+            explanation: 'Official channels provide the most accurate and timely information during a storm.',
+            points: 10
+          },
+          {
+            id: 'cyclone_q12',
+            question: 'What is the "Eyewall" of a cyclone?',
+            options: [
+              'The calm center',
+              'The ring of most intense winds and rain surrounding the center',
+              'The outermost clouds',
+              'A wall built to stop the storm'
+            ],
+            correctAnswer: 1,
+            explanation: ' The eyewall contains the strongest winds and heaviest rain in a cyclonic system.',
+            points: 15
+          },
+          {
+            id: 'cyclone_q13',
+            question: 'What should you do after the "eye" passes?',
+            options: [
+              'Go outside and start cleaning',
+              'Stay inside - the second half of the storm will arrive soon',
+              'Call your friends',
+              'Open all windows'
+            ],
+            correctAnswer: 1,
+            explanation: 'The other side of the eyewall follows the calm eye with equally destructive force.',
+            points: 15
+          },
+          {
+            id: 'cyclone_q14',
+            question: 'How can you protect your windows if you don\'t have storm shutters?',
+            options: [
+              'Tape them with an "X"',
+              'Board them up with plywood',
+              'Leave them wide open',
+              'Cover them with curtains only'
+            ],
+            correctAnswer: 1,
+            explanation: 'Plywood boarding is an effective way to protect windows from flying debris. Taping does not prevent breakage.',
+            points: 10
+          },
+          {
+            id: 'cyclone_q15',
+            question: 'Which areas in India are generally NOT at risk from cyclonic wind damage?',
+            options: [
+              'Indo-Gangetic plains',
+              'Eastern coastal states',
+              'Western coastal states',
+              'Deep interior southern regions'
+            ],
+            correctAnswer: 3,
+            explanation: 'While most of India can be affected by weather systems, deep interior regions are less likely to experience the full force of cyclonic winds compared to coastal and northern plains.',
+            points: 10
           }
         ]
       }
@@ -875,15 +1317,7 @@ export const seedHeatwaveModule = async () => {
           'Call for medical help if someone shows signs of heat stroke'
         ],
 
-        afterDisaster: [
-          'Continue to monitor yourself and others for heat-related illness symptoms',
-          'Gradually return to normal activities as temperatures cool',
-          'Check on elderly neighbors and relatives who may need assistance',
-          'Ensure air conditioning systems are working for future heatwaves',
-          'Restock emergency supplies used during the heatwave',
-          'Review and improve your heat emergency plan',
-          'Stay hydrated as your body recovers from heat stress'
-        ],
+        afterDisaster: [],
 
         images: [
           '/images/heatwave-safety.jpg',
@@ -980,6 +1414,97 @@ export const seedHeatwaveModule = async () => {
             correctAnswer: 1,
             explanation: 'Loose, light-colored, lightweight clothing reflects sunlight and allows sweat to evaporate, helping your body stay cool.',
             points: 10
+          },
+          {
+            id: 'heat_q9',
+            question: 'What should you do if you MUST work outside during a heatwave?',
+            options: [
+              'Work as fast as possible without breaks',
+              'Take frequent breaks in shaded or air-conditioned areas',
+              'Wear black clothes to hide sweat',
+              'Avoid drinking water so you don\'t need bathroom breaks'
+            ],
+            correctAnswer: 1,
+            explanation: 'Frequent breaks in a cool environment allow your body temperature to normalize.',
+            points: 15
+          },
+          {
+            id: 'heat_q10',
+            question: 'Where is the safest place to be during a heatwave if you don\'t have air conditioning at home?',
+            options: [
+              'In the attic',
+              'Public libraries, malls, or cooling centers',
+              'Under a direct sunlit porch',
+              'In a closed kitchen while cooking'
+            ],
+            correctAnswer: 1,
+            explanation: 'Public spaces often have climate control and offer a safe refuge from extreme heat.',
+            points: 10
+          },
+          {
+            id: 'heat_q11',
+            question: 'Why should you check on elderly neighbors during a heatwave?',
+            options: [
+              'To ask for recipes',
+              'They may be less able to realize they are overheating and need help',
+              'To borrow their fan',
+              'To see if they are watching the news'
+            ],
+            correctAnswer: 1,
+            explanation: 'Elderly individuals are more susceptible to heat and may need assistance to stay hydrated and cool.',
+            points: 15
+          },
+          {
+            id: 'heat_q12',
+            question: 'What is "Heat Cramps"?',
+            options: [
+              'Severe stomach ache',
+              'Painful muscle spasms usually in the legs or abdomen caused by heat and fluid loss',
+              'A type of skin rash',
+              'Feeling very tired'
+            ],
+            correctAnswer: 1,
+            explanation: 'Heat cramps are an early sign of heat-related illness caused by loss of salt and water through sweating.',
+            points: 10
+          },
+          {
+            id: 'heat_q13',
+            question: 'How much water should an adult drink during an active day in a heatwave?',
+            options: [
+              '1-2 glasses',
+              'At least 2-4 liters (8-10 glasses)',
+              'Only when thirsty',
+              'None until the evening'
+            ],
+            correctAnswer: 1,
+            explanation: 'Staying hydrated with 2-4 liters of water is necessary to replace fluids lost through sweating.',
+            points: 15
+          },
+          {
+            id: 'heat_q14',
+            question: 'If you see someone confused and with hot, dry skin during a heatwave, what is the best first step?',
+            options: [
+              'Fan them and wait',
+              'Call 102/108 immediately — it is likely heat stroke',
+              'Give them a hot meal',
+              'Tell them to walk it off'
+            ],
+            correctAnswer: 1,
+            explanation: 'These are symptoms of heat stroke, which is life-threatening and requires immediate professional medical intervention.',
+            points: 15
+          },
+          {
+            id: 'heat_q15',
+            question: 'What can you do to keep your home cooler during a heatwave?',
+            options: [
+              'Keep all windows open all day',
+              'Close curtains and blinds to block direct sunlight',
+              'Keep the oven running',
+              'Use dark-colored rugs'
+            ],
+            correctAnswer: 1,
+            explanation: 'Blocking direct sunlight prevents the greenhouse effect from heating up your interior rooms.',
+            points: 10
           }
         ]
       }
@@ -1031,25 +1556,7 @@ export const seedDroughtModule = async () => {
           'Develop alternative income sources beyond rain-dependent farming'
         ],
 
-        duringDisaster: [
-          'Prioritize water use for drinking, cooking, and essential hygiene',
-          'Share water resources fairly within the community',
-          'Reduce non-essential water usage like car washing and lawn watering',
-          'Focus on saving the most valuable crops and livestock',
-          'Seek government assistance and drought relief programs',
-          'Cooperate with water rationing and conservation measures',
-          'Monitor family and livestock health for dehydration signs'
-        ],
-
-        afterDisaster: [
-          'Assess crop and livestock losses for insurance and aid claims',
-          'Rebuild soil health with organic matter and cover crops',
-          'Repair and improve water conservation infrastructure',
-          'Plan for future droughts by diversifying crops and income',
-          'Participate in community drought preparedness planning',
-          'Apply for government recovery assistance and loans',
-          'Share lessons learned with other farmers and community members'
-        ],
+        afterDisaster: [],
 
         images: [
           '/images/drought-crops.jpg',
@@ -1146,6 +1653,92 @@ export const seedDroughtModule = async () => {
             correctAnswer: 1,
             explanation: 'Water resources like rivers, groundwater, and reservoirs are shared. Community coordination ensures fair distribution and prevents conflicts during water scarcity.',
             points: 15
+          },
+          {
+            id: 'drought_q9',
+            question: 'What is "Greywater" and how can it be used in a drought?',
+            options: [
+              'Contaminated river water',
+              'Used water from sinks/showers that can be reused for plants',
+              'Dirty rain water',
+              'Water from a well'
+            ],
+            correctAnswer: 1,
+            explanation: 'Greywater can be safely reused for watering gardens or flushing toilets, reducing the demand on fresh water supplies.',
+            points: 10
+          },
+          {
+            id: 'drought_q10',
+            question: 'How does drought affect the risk of wildfires?',
+            options: [
+              'It decreases the risk',
+              'It increases the risk by drying out vegetation',
+              'It has no effect',
+              'It only affects local weather'
+            ],
+            correctAnswer: 1,
+            explanation: 'Dry vegetation becomes highly flammable fuel, significantly increasing the risk and intensity of wildfires.',
+            points: 15
+          },
+          {
+            id: 'drought_q11',
+            question: 'What is "Xeriscaping"?',
+            options: [
+              'A type of farming',
+              'Landscaping that reduces or eliminates the need for irrigation',
+              'Searching for water deep underground',
+              'Cleaning dry river beds'
+            ],
+            correctAnswer: 1,
+            explanation: 'Xeriscaping uses drought-tolerant plants and efficient designs to create beautiful landscapes that require very little water.',
+            points: 15
+          },
+          {
+            id: 'drought_q12',
+            question: 'Why is over-extraction of groundwater dangerous during a drought?',
+            options: [
+              'It makes the water too salty',
+              'It can cause land to sink (subsidence) and dry up neighboring wells',
+              'It causes floods later',
+              'It is too expensive'
+            ],
+            correctAnswer: 1,
+            explanation: 'Extracting too much water can lead to permanent damage to aquifers and structural sinking of the land.',
+            points: 15
+          },
+          {
+            id: 'drought_q13',
+            question: 'How can you detect a water leak at home during a drought?',
+            options: [
+              'Wait for a flood',
+              'Check your water meter when no water is being used',
+              'Listen for whistling sounds',
+              'Look for rainbows'
+            ],
+            correctAnswer: 1,
+            explanation: 'If the meter is still moving while all taps are closed, you likely have a hidden leak.',
+            points: 10
+          },
+          {
+            id: 'drought_q14',
+            question: 'What is the role of a "check dam" in drought mitigation?',
+            options: [
+              'To generate electricity',
+              'To slow down water flow and increase groundwater recharge',
+              'To prevent boats from passing',
+              'To create large industrial reservoirs'
+            ],
+            correctAnswer: 1,
+            explanation: 'Check dams help the ground absorb water during rainy periods, replenishing the local water table for use during dry times.',
+            points: 10
+          },
+          {
+            id: 'drought_q15',
+            question: 'Which sector uses the most water in India?',
+            options: ['Industrial', 'Domestic/Household', 'Agricultural', 'Tourism'],
+            correctAnswer: 2,
+            explanation: 'Agriculture is by far the largest consumer of water in India, making efficient irrigation a primary drought mitigation strategy.',
+            points: 10
           }
         ]
       }
@@ -1191,26 +1784,7 @@ export const seedTornadoModule = async () => {
           'If living in a mobile home, identify the nearest sturdy building and plan to evacuate quickly'
         ],
 
-        duringDisaster: [
-          'Immediately go to a pre-designated shelter area — an interior room on the lowest floor',
-          'Stay away from all windows, doors, and exterior walls at all times',
-          'Crouch down, cover your head and neck with your arms, and face down or lie flat',
-          'If outdoors and cannot reach shelter, lie flat in a low ditch or depression — do NOT shelter under a bridge',
-          'If in a vehicle, do NOT try to outrun a tornado on roads; abandon the vehicle and find a sturdy building',
-          'Do not try to open windows — this is a dangerous myth and wastes precious time',
-          'Stay sheltered even after the tornado passes — multiple tornadoes can form from the same storm system'
-        ],
-
-        afterDisaster: [
-          'Wait for official all-clear before leaving your shelter — multiple tornadoes can follow',
-          'Watch carefully for downed power lines, broken glass, structural instability, and debris',
-          'Do not enter severely damaged buildings until cleared by authorities for structural safety',
-          'Check yourself and others for injuries and provide first aid as needed',
-          'Document all damage thoroughly with photos for insurance and government assistance claims',
-          'Report hazardous situations like gas leaks, downed power lines, and structural collapse to authorities immediately',
-          'Check on neighbors, especially elderly and disabled residents who may need assistance',
-          'Cooperate with emergency responders and follow any evacuation orders promptly'
-        ],
+        afterDisaster: [],
 
         images: [
           '/images/tornado-shelter-map.jpg',
@@ -1244,7 +1818,7 @@ export const seedTornadoModule = async () => {
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
             thumbnail: '/images/thumbnails/tornado-action.jpg',
             duration: 200,
-            section: 'duringDisaster'
+            section: 'preventionMeasures'
           }
         ]
       },
@@ -1315,6 +1889,92 @@ export const seedTornadoModule = async () => {
             correctAnswer: 1,
             explanation: 'Cover your head and neck with your arms, and if available, use a blanket, pillow, or mattress for additional protection against debris.',
             points: 10
+          },
+          {
+            id: 't9',
+            question: 'What is a "Dust Devil" or "Loo Storm"?',
+            options: [
+              'A small tornado-like swirl of air that can still cause damage',
+              'A very rain-heavy storm',
+              'A type of snow storm',
+              'A calm breeze'
+            ],
+            correctAnswer: 0,
+            explanation: 'Locally called dust devils or loo storms in India, these small vortices can still be dangerous and require caution.',
+            points: 10
+          },
+          {
+            id: 't10',
+            question: 'Which of these is NOT a good place to hide during a tornado?',
+            options: ['A closet', 'Under heavy furniture', 'By a large window', 'A basement'],
+            correctAnswer: 2,
+            explanation: 'Windows are extremely dangerous during a tornado due to flying glass and debris.',
+            points: 10
+          },
+          {
+            id: 't11',
+            question: 'What does a "Tornado Warning" mean you should do immediately?',
+            options: [
+              'Go for a drive',
+              'Take shelter immediately in a sturdy building',
+              'Check the news for more details',
+              'Watch the sky from outside'
+            ],
+            correctAnswer: 1,
+            explanation: 'A warning means a tornado is imminent; you must take cover immediately.',
+            points: 15
+          },
+          {
+            id: 't12',
+            question: 'Why is it dangerous to stay in a car during a tornado?',
+            options: [
+              'The car might run out of gas',
+              'Tornadoes can lift and toss vehicles easily',
+              'The radio might stop working',
+              'You might get lost'
+            ],
+            correctAnswer: 1,
+            explanation: 'Vehicles offer no protection against tornado-force winds and can become deadly projectiles.',
+            points: 15
+          },
+          {
+            id: 't13',
+            question: 'What is the "Enhanced Fujita" (EF) scale used for?',
+            options: [
+              'Measuring rainfall',
+              'Measuring tornado strength based on wind speed and damage',
+              'Measuring earthquake depth',
+              'Measuring heat intensity'
+            ],
+            correctAnswer: 1,
+            explanation: 'The EF scale is the standard system for rating the severity of tornadoes.',
+            points: 10
+          },
+          {
+            id: 't14',
+            question: 'What should you do if you are in a mobile home during a tornado watch?',
+            options: [
+              'Stay and hope for the best',
+              'Leave and find shelter in a nearby sturdy building',
+              'Hide in the bathtub',
+              'Tie the home to the ground'
+            ],
+            correctAnswer: 1,
+            explanation: 'Mobile homes are very vulnerable to high winds. Always evacuate to a permanent, sturdy structure.',
+            points: 15
+          },
+          {
+            id: 't15',
+            question: 'What can help rescuers find you after a tornado if you are trapped?',
+            options: [
+              'A heavy blanket',
+              'A whistle or flashlight',
+              'Opening your windows',
+              'Painting your roof'
+            ],
+            correctAnswer: 1,
+            explanation: 'Light and sound signals are the most effective ways to attract the attention of search and rescue teams.',
+            points: 10
           }
         ]
       }
@@ -1357,27 +2017,7 @@ export const seedGasLeakModule = async () => {
           'Know the location of the main gas shut-off valve/regulator in your home or building'
         ],
 
-        duringDisaster: [
-          'Do NOT use any electrical switches, appliances, phones, or lighters — even a small spark can ignite gas',
-          'Leave the building immediately, leaving doors open as you go to help ventilate',
-          'Do NOT use elevators — use the stairs, keeping movement calm and steady',
-          'Once outside, move at least 100 meters away from the building before using your phone',
-          'Call emergency services (fire brigade: 101) and your gas supplier from a safe distance',
-          'Warn neighbors and discourage anyone from entering the building',
-          'If you cannot evacuate, open windows (if reachable without using electricity) and stay low to the floor',
-          'If you smell gas in a vehicle, pull over safely, exit, and move far away before calling for help'
-        ],
-
-        afterDisaster: [
-          'Do NOT re-enter the building until cleared by emergency services and the gas company',
-          'Do not turn on any lights, appliances, or electronics until professionals confirm the leak is fixed and ventilated',
-          'Have a certified gas engineer inspect and repair all affected appliances and connections before use',
-          'Ventilate the building thoroughly for several hours after professional clearance is given',
-          'Check all occupants for symptoms of gas exposure: dizziness, nausea, headache, confusion',
-          'Seek medical attention if anyone shows symptoms — even carbon monoxide exposure requires treatment',
-          'Report the incident to your gas supplier and local authorities for documentation',
-          'Review and update your emergency plan to practice gas leak drills with your family'
-        ],
+        afterDisaster: [],
 
         images: [
           '/images/gas-detector.jpg',
@@ -1411,7 +2051,7 @@ export const seedGasLeakModule = async () => {
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             thumbnail: '/images/thumbnails/gas-evacuation.jpg',
             duration: 180,
-            section: 'duringDisaster'
+            section: 'preventionMeasures'
           }
         ]
       },
@@ -1482,6 +2122,92 @@ export const seedGasLeakModule = async () => {
             correctAnswer: 1,
             explanation: 'Gas appliances not designed for space heating produce dangerous levels of carbon monoxide. In an enclosed space, this can build up to fatal concentrations quickly.',
             points: 15
+          },
+          {
+            id: 'g9',
+            question: 'What is "Mercaptan"?',
+            options: [
+              'A type of gas pipe',
+              'The chemical added to gas to give it a rotten-egg smell',
+              'A safety valve',
+              'A tool for fixing leaks'
+            ],
+            correctAnswer: 1,
+            explanation: 'Mercaptan is the odorant added to natural gas to make leaks detectable by humans.',
+            points: 10
+          },
+          {
+            id: 'g10',
+            question: 'What should you do if you suspect a gas leak but don\'t smell anything?',
+            options: [
+              'Ignore it',
+              'Listen for hissing or look for bubbling in soapy water on connections',
+              'Use a lighter to check',
+              'Close all doors and sleep'
+            ],
+            correctAnswer: 1,
+            explanation: 'Hissing sounds or bubbles in a soap solution are reliable ways to confirm a pressure leak.',
+            points: 15
+          },
+          {
+            id: 'g11',
+            question: 'Why are pilot lights dangerous if the gas is not lit?',
+            options: [
+              'They use up oxygen',
+              'They continuously release gas into the room',
+              'They create too much light',
+              'They make a clicking sound'
+            ],
+            correctAnswer: 1,
+            explanation: 'An unlit gas valve will continuously fill a room with flammable gas until it reaches explosive levels.',
+            points: 15
+          },
+          {
+            id: 'g12',
+            question: 'What should you do with your gas cylinder when going on vacation?',
+            options: [
+              'Leave it as is',
+              'Close the main regulator valve tightly',
+              'Turn it upside down',
+              'Put it in the garage'
+            ],
+            correctAnswer: 1,
+            explanation: 'Closing the main valve prevents any leaks from developing while the home is unoccupied.',
+            points: 10
+          },
+          {
+            id: 'g13',
+            question: 'Which of these can detect carbon monoxide?',
+            options: ['A smoke alarm', 'A specialized CO detector', 'A thermometer', 'A regular fan'],
+            correctAnswer: 1,
+            explanation: 'Carbon monoxide is odorless. Only a dedicated CO alarm can detect it before it becomes lethal.',
+            points: 15
+          },
+          {
+            id: 'g14',
+            question: 'What is the risk of using a damaged rubber hose on an LPG cylinder?',
+            options: [
+              'The gas will smell better',
+              'Gas can leak through cracks, leading to a fire or explosion',
+              'The stove will be harder to light',
+              'The food will cook faster'
+            ],
+            correctAnswer: 1,
+            explanation: 'Old or cracked hoses are a major source of domestic gas leaks and fires.',
+            points: 15
+          },
+          {
+            id: 'g15',
+            question: 'What is "Asphyxiation" in the context of a gas leak?',
+            options: [
+              'A type of skin rash',
+              'Suffocation caused by gas replacing oxygen in the air',
+              'A metal disease',
+              'A high fever'
+            ],
+            correctAnswer: 1,
+            explanation: 'Natural gas can displace oxygen in a closed room, leading to loss of consciousness and death by suffocation.',
+            points: 10
           }
         ]
       }
@@ -1523,26 +2249,7 @@ export const seedCollapseModule = async () => {
           'Advocate for regular structural safety inspections of schools, public buildings, and housing'
         ],
 
-        duringDisaster: [
-          'If you sense a collapse starting, immediately take cover beside a large, solid piece of furniture (sofa, car) — not under it',
-          'Cover your nose and mouth with clothing or any available fabric to avoid inhaling dangerous dust and particles',
-          'Try to stay near an exterior wall to increase your visibility and access for rescue teams',
-          'Stay completely calm — panic increases oxygen consumption and can lead to poor decisions',
-          'Do not use lighters or matches — gas lines may have ruptured and any flame could cause an explosion',
-          'If trapped, tap slowly and regularly on pipes, walls, or debris so rescuers can locate you — shout only as a last resort to conserve air',
-          'Do not move unnecessary debris that could cause secondary collapses — only move what is essential to breathe or survive'
-        ],
-
-        afterDisaster: [
-          'Once the immediate collapse stops, assess your injuries — do not move if spinal injury is suspected',
-          'Create an air passage if needed by carefully clearing debris around your face to improve breathing',
-          'Signal rescuers using tapping (3 taps, pause, 3 taps) on metal pipes or solid walls rather than shouting repeatedly',
-          'Conserve water and ration any food or water you may have — rescues can take hours or even days',
-          'If you can hear rescuers approaching, shout and tap loudly to give them your precise location',
-          'Do not eat or drink anything from the collapse debris — food and water may be contaminated',
-          'Once rescued, lie flat and do not stand up suddenly — your body may be in shock from stress and dehydration',
-          'Seek immediate medical evaluation even if you feel uninjured — internal injuries and crush syndrome develop over hours'
-        ],
+        afterDisaster: [],
 
         images: [
           '/images/void-space-triangle.jpg',
@@ -1647,6 +2354,92 @@ export const seedCollapseModule = async () => {
             correctAnswer: 1,
             explanation: 'Reporting visible structural defects (large cracks, sagging elements) and supporting regular building safety inspections are the most effective community-level prevention strategies.',
             points: 15
+          },
+          {
+            id: 'b9',
+            question: 'What is a "Void Space"?',
+            options: [
+              'An empty room',
+              'A protective space created when structural elements fall and lean against each other',
+              'A place where no one is allowed',
+              'The space outside a building'
+            ],
+            correctAnswer: 1,
+            explanation: 'Void spaces are the only places survivors can be found alive under rubble.',
+            points: 15
+          },
+          {
+            id: 'b10',
+            question: 'Which of these is a sign of a structural "load-bearing" failure?',
+            options: [
+              'Peeling wallpaper',
+              'Deep "X" or diagonal cracks in thick walls or columns',
+              'A squeaky door',
+              'A dirty floor'
+            ],
+            correctAnswer: 1,
+            explanation: 'Diagonal or X-shaped cracks in columns or major walls indicate that the structure is under extreme stress and near failure.',
+            points: 15
+          },
+          {
+            id: 'b11',
+            question: 'What is "Pancake Collapse"?',
+            options: [
+              'A fire in a kitchen',
+              'A failure where multiple floors fall flat on top of each other',
+              'A type of soil erosion',
+              'A method of demolition'
+            ],
+            correctAnswer: 1,
+            explanation: 'Pancake collapses are the most deadly as they leave very few void spaces for survival.',
+            points: 10
+          },
+          {
+            id: 'b12',
+            question: 'Why is it important to conserve energy while trapped in a collapse?',
+            options: [
+              'To save money',
+              'To reduce oxygen consumption and stay alive longer',
+              'To keep from getting hungry',
+              'To stay cool'
+            ],
+            correctAnswer: 1,
+            explanation: 'Staying calm and minimizing physical exertion helps you use the limited oxygen available in a void space.',
+            points: 15
+          },
+          {
+            id: 'b13',
+            question: 'What should you do if you see a building leaning?',
+            options: [
+              'Take a photo',
+              'Stay away and report it to the municipal authorities immediately',
+              'Try to push it back',
+              'Wait and see if it falls'
+            ],
+            correctAnswer: 1,
+            explanation: 'A leaning building is a sign of foundation failure and could collapse at any moment.',
+            points: 10
+          },
+          {
+            id: 'b14',
+            question: 'What material is most resilient during an earthquake collapse?',
+            options: ['Unreinforced brick', 'Reinforced concrete with proper steel binding', 'Mud and straw', 'Plain glass'],
+            correctAnswer: 1,
+            explanation: 'Reinforced concrete is designed to bend and hold together even under extreme stress.',
+            points: 10
+          },
+          {
+            id: 'b15',
+            question: 'Who are "First Responders" in a collapse scenario?',
+            options: [
+              'Neighbors and bystanders who are already there',
+              'Only professional NDRF teams',
+              'The police only',
+              'The media'
+            ],
+            correctAnswer: 0,
+            explanation: 'While professionals are essential, the first people on the scene are usually local residents who can provide immediate, life-saving help.',
+            points: 10
           }
         ]
       }

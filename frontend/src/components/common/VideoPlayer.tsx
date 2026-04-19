@@ -217,6 +217,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           className="w-full h-full border-0 absolute inset-0"
           allow="autoplay; fullscreen"
           allowFullScreen
+          loading="lazy"
         ></iframe>
       ) : (
         <>

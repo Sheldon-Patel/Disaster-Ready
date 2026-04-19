@@ -32,23 +32,10 @@ const QuizPage: React.FC = () => {
 
           const moduleQuestions = module.quiz?.questions || [];
 
-          // If we have more than 5 questions, randomly select 5
+          // Select 5 random questions from the pool
           let selectedQuestions: Question[];
-          if (moduleQuestions.length > 5) {
-            const shuffled = [...moduleQuestions].sort(() => Math.random() - 0.5);
-            selectedQuestions = shuffled.slice(0, 5).map((q: any, index: number) => ({
-              ...q,
-              id: `q${index + 1}` // Reassign IDs to maintain order
-            }));
-          } else {
-            // If we have 5 or fewer questions, use them all but still shuffle
-            selectedQuestions = [...moduleQuestions]
-              .sort(() => Math.random() - 0.5)
-              .map((q: any, index: number) => ({
-                ...q,
-                id: `q${index + 1}`
-              }));
-          }
+          const shuffled = [...moduleQuestions].sort(() => Math.random() - 0.5);
+          selectedQuestions = shuffled.slice(0, 5);
 
           setQuestions(selectedQuestions);
           setTimeLeft((module.quiz?.timeLimit || 15) * 60);

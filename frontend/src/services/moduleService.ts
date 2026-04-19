@@ -152,7 +152,10 @@ export class ModuleService {
       if (response.data.success && response.data.data) {
         // Find the progress record specifically for this module
         const progressRecord = response.data.data.find(
-          (record: any) => record.moduleId?._id === moduleId || record.moduleId === moduleId
+          (record: any) => {
+            const recordModuleId = record.moduleId?._id?.toString() || record.moduleId?.toString() || '';
+            return recordModuleId === moduleId;
+          }
         );
 
         if (progressRecord) {

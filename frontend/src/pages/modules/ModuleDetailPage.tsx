@@ -481,19 +481,45 @@ const ModuleDetailPage: React.FC = () => {
                     <p className="text-gray-500 mt-2 text-lg">Master the crucial steps to take before, during, and after an event.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Before Disaster */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Introduction & Basics */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-blue-100 overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col group">
+                      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 shrink-0 flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-white flex items-center">
+                          <span className="text-2xl mr-2">📚</span> Introduction & Basics
+                        </h3>
+                        <button
+                          onClick={() => handleSpeak('Introduction & Basics', module.content.keyPoints)}
+                          className={`p-2 rounded-full transition-colors ${speakingSection === 'Introduction & Basics' ? 'bg-white text-blue-600 shadow-md' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+                          title="Listen to this section"
+                        >
+                          {speakingSection === 'Introduction & Basics' ? '⏹️' : '🔊'}
+                        </button>
+                      </div>
+                      <div className="p-6 bg-blue-50/50 flex-1">
+                        <ul className="space-y-4">
+                          {module.content.keyPoints.map((point, index) => (
+                            <li key={index} className="flex items-start bg-white p-3 rounded-lg border border-blue-100 shadow-sm transition-all group-hover:border-blue-300">
+                              <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5 border border-blue-200">{index + 1}</span>
+                              <span className="text-gray-700 font-medium leading-relaxed">{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Prevention & Preparedness */}
                     <div className="bg-white rounded-2xl shadow-lg border border-green-100 overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col group">
                       <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4 shrink-0 flex justify-between items-center">
                         <h3 className="text-xl font-bold text-white flex items-center">
-                          <span className="text-2xl mr-2">🛡️</span> Preparation
+                          <span className="text-2xl mr-2">🛡️</span> Prevention & Preparedness
                         </h3>
                         <button
-                          onClick={() => handleSpeak('Preparation', module.content.preventionMeasures)}
-                          className={`p-2 rounded-full transition-colors ${speakingSection === 'Preparation' ? 'bg-white text-emerald-600 shadow-md' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+                          onClick={() => handleSpeak('Prevention & Preparedness', module.content.preventionMeasures)}
+                          className={`p-2 rounded-full transition-colors ${speakingSection === 'Prevention & Preparedness' ? 'bg-white text-emerald-600 shadow-md' : 'bg-white/20 hover:bg-white/30 text-white'}`}
                           title="Listen to this section"
                         >
-                          {speakingSection === 'Preparation' ? '⏹️' : '🔊'}
+                          {speakingSection === 'Prevention & Preparedness' ? '⏹️' : '🔊'}
                         </button>
                       </div>
                       <div className="p-6 bg-green-50/50 flex-1">
@@ -508,57 +534,33 @@ const ModuleDetailPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* During Disaster */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-red-100 overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col group">
-                      <div className="bg-gradient-to-r from-red-600 to-orange-500 p-4 shrink-0 flex justify-between items-center">
-                        <h3 className="text-xl font-bold text-white flex items-center">
-                          <span className="text-2xl mr-2">⚠️</span> Immediate Action
-                        </h3>
-                        <button
-                          onClick={() => handleSpeak('Immediate Action', module.content.duringDisaster)}
-                          className={`p-2 rounded-full transition-colors ${speakingSection === 'Immediate Action' ? 'bg-white text-red-600 shadow-md' : 'bg-white/20 hover:bg-white/30 text-white'}`}
-                          title="Listen to this section"
-                        >
-                          {speakingSection === 'Immediate Action' ? '⏹️' : '🔊'}
-                        </button>
-                      </div>
-                      <div className="p-6 bg-red-50/50 flex-1">
-                        <ul className="space-y-4">
-                          {module.content.duringDisaster.map((action, index) => (
-                            <li key={index} className="flex items-start bg-white p-3 rounded-lg border border-red-100 shadow-sm transition-all group-hover:border-red-300">
-                              <span className="flex-shrink-0 w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center mr-3 mt-0.5 border border-red-200">⚡</span>
-                              <span className="text-gray-700 font-medium leading-relaxed">{action}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
                     {/* After Disaster */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-blue-100 overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col group">
-                      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 shrink-0 flex justify-between items-center">
-                        <h3 className="text-xl font-bold text-white flex items-center">
-                          <span className="text-2xl mr-2">🛠️</span> Safe Recovery
-                        </h3>
-                        <button
-                          onClick={() => handleSpeak('Safe Recovery', module.content.afterDisaster)}
-                          className={`p-2 rounded-full transition-colors ${speakingSection === 'Safe Recovery' ? 'bg-white text-blue-600 shadow-md' : 'bg-white/20 hover:bg-white/30 text-white'}`}
-                          title="Listen to this section"
-                        >
-                          {speakingSection === 'Safe Recovery' ? '⏹️' : '🔊'}
-                        </button>
+                    {module.content.afterDisaster && module.content.afterDisaster.length > 0 && (
+                      <div className="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col group md:col-span-2">
+                        <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-4 shrink-0 flex justify-between items-center">
+                          <h3 className="text-xl font-bold text-white flex items-center">
+                            <span className="text-2xl mr-2">🔧</span> After the Event — Recovery Steps
+                          </h3>
+                          <button
+                            onClick={() => handleSpeak('After the Event', module.content.afterDisaster)}
+                            className={`p-2 rounded-full transition-colors ${speakingSection === 'After the Event' ? 'bg-white text-orange-600 shadow-md' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+                            title="Listen to this section"
+                          >
+                            {speakingSection === 'After the Event' ? '⏹️' : '🔊'}
+                          </button>
+                        </div>
+                        <div className="p-6 bg-orange-50/50 flex-1">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {module.content.afterDisaster.map((step, index) => (
+                              <div key={index} className="flex items-start bg-white p-3 rounded-lg border border-orange-100 shadow-sm transition-all group-hover:border-orange-300">
+                                <span className="flex-shrink-0 w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mr-3 mt-0.5 border border-orange-200 text-xs font-bold">{index + 1}</span>
+                                <span className="text-gray-700 font-medium leading-relaxed">{step}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <div className="p-6 bg-blue-50/50 flex-1">
-                        <ul className="space-y-4">
-                          {module.content.afterDisaster.map((action, index) => (
-                            <li key={index} className="flex items-start bg-white p-3 rounded-lg border border-blue-100 shadow-sm transition-all group-hover:border-blue-300">
-                              <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5 border border-blue-200">ℹ️</span>
-                              <span className="text-gray-700 font-medium leading-relaxed">{action}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -729,101 +731,7 @@ const ModuleDetailPage: React.FC = () => {
                         </div>
                       )}
 
-                      {/* During Disaster Videos */}
-                      {(module.content.videos?.filter((video: any) => video.section === 'duringDisaster').length || 0) > 0 && (
-                        <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-xl p-6 border border-red-200">
-                          <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                            <span className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-lg font-semibold mr-4 shadow-sm">
-                              ⚠️
-                            </span>
-                            Emergency Response
-                            <span className="ml-auto bg-red-600 text-white text-xs px-3 py-1 rounded-full">
-                              {module.content.videos?.filter((video: any) => video.section === 'duringDisaster').length} videos
-                            </span>
-                          </h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {module.content.videos
-                              ?.filter((video: any) => video.section === 'duringDisaster')
-                              .map((video: any) => (
-                                <div
-                                  key={video.id}
-                                  className={`bg-white border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${selectedVideo?.id === video.id ? 'border-red-500 shadow-md' : 'border-gray-200'
-                                    }`}
-                                  onClick={() => setSelectedVideo(video)}
-                                >
-                                  <div className="relative mb-3">
-                                    <img
-                                      src={video.thumbnail}
-                                      alt={video.title}
-                                      className="w-full h-32 object-cover rounded-md"
-                                    />
-                                    <div className="absolute inset-0 bg-black bg-opacity-30 rounded-md flex items-center justify-center">
-                                      <div className="bg-red-600 bg-opacity-90 text-white rounded-full p-2">
-                                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                          <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                      </div>
-                                    </div>
-                                    <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                      {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
-                                    </div>
-                                  </div>
-                                  <h5 className="font-medium text-gray-900 mb-1">{video.title}</h5>
-                                  <p className="text-sm text-gray-600">{video.description}</p>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      )}
 
-                      {/* After Disaster Videos */}
-                      {(module.content.videos?.filter((video: any) => video.section === 'afterDisaster').length || 0) > 0 && (
-                        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200">
-                          <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                            <span className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-lg font-semibold mr-4 shadow-sm">
-                              🛠️
-                            </span>
-                            Recovery & Aftermath
-                            <span className="ml-auto bg-purple-600 text-white text-xs px-3 py-1 rounded-full">
-                              {module.content.videos?.filter((video: any) => video.section === 'afterDisaster').length} videos
-                            </span>
-                          </h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {module.content.videos
-                              ?.filter((video: any) => video.section === 'afterDisaster')
-                              .map((video: any) => (
-                                <div
-                                  key={video.id}
-                                  className={`bg-white border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${selectedVideo?.id === video.id ? 'border-red-500 shadow-md' : 'border-gray-200'
-                                    }`}
-                                  onClick={() => setSelectedVideo(video)}
-                                >
-                                  <div className="relative mb-3">
-                                    <img
-                                      src={video.thumbnail}
-                                      alt={video.title}
-                                      className="w-full h-32 object-cover rounded-md"
-                                    />
-                                    <div className="absolute inset-0 bg-black bg-opacity-30 rounded-md flex items-center justify-center">
-                                      <div className="bg-red-600 bg-opacity-90 text-white rounded-full p-2">
-                                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                          <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                      </div>
-                                    </div>
-                                    <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                                      {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
-                                    </div>
-                                  </div>
-                                  <h5 className="font-medium text-gray-900 mb-1">{video.title}</h5>
-                                  <p className="text-sm text-gray-600">{video.description}</p>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Video Learning Tips */}
                       <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-200 rounded-xl p-8 shadow-lg">
                         <div className="flex items-center mb-6">
                           <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl mr-4 shadow-sm">

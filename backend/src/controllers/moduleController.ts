@@ -25,13 +25,30 @@ export const getModules = async (req: Request, res: Response) => {
       .skip((Number(page) - 1) * Number(limit))
       .select('-quiz.questions.correctAnswer');
 
+    // Aggregate real student completion counts from UserProgress
+    const completionCounts = await UserProgress.aggregate([
+      { $match: { status: 'completed' } },
+      { $group: { _id: '$moduleId', count: { $sum: 1 } } }
+    ]);
+    const countMap: Record<string, number> = {};
+    completionCounts.forEach((c: any) => {
+      countMap[c._id.toString()] = c.count;
+    });
+
+    // Attach real completion counts to each module
+    const modulesWithCounts = modules.map(m => {
+      const obj = m.toObject();
+      obj.completions = countMap[m._id.toString()] || 0;
+      return obj;
+    });
+
     const total = await DisasterModule.countDocuments(query);
 
     res.status(200).json({
       success: true,
-      count: modules.length,
+      count: modulesWithCounts.length,
       total,
-      data: modules
+      data: modulesWithCounts
     });
 
   } catch (error) {
@@ -43,13 +60,13 @@ export const getModules = async (req: Request, res: Response) => {
   }
 };
 
+
 // @desc    Get single disaster module
 // @route   GET /api/modules/:id
 // @access  Public
 export const getModule = async (req: Request, res: Response) => {
   try {
-    const module = await DisasterModule.findById(req.params.id)
-      .select('-quiz.questions.correctAnswer');
+    const module = await DisasterModule.findById(req.params.id);
 
     if (!module) {
       return res.status(404).json({
@@ -98,7 +115,10 @@ export const startModule = async (req: AuthRequest, res: Response) => {
         attempts: 1
       });
     } else {
-      progress.status = 'in_progress';
+      // Only set to in_progress if not already completed
+      if (progress.status !== 'completed') {
+        progress.status = 'in_progress';
+      }
       progress.attempts += 1;
       await progress.save();
     }
@@ -111,11 +131,7 @@ export const startModule = async (req: AuthRequest, res: Response) => {
         module: {
           ...module.toObject(),
           quiz: {
-            ...module.quiz,
-            questions: module.quiz.questions.map(q => ({
-              ...q,
-              correctAnswer: undefined
-            }))
+            ...module.quiz
           }
         }
       }
@@ -197,9 +213,15 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
 
     const wasAlreadyCompleted = progress.status === 'completed';
 
-    // Update user progress
-    progress.score = score;
-    progress.status = passed ? 'completed' : 'in_progress';
+    // Update user progress safely (never downgrade status or score)
+    if (wasAlreadyCompleted) {
+      if (score > progress.score) {
+        progress.score = score;
+      }
+    } else {
+      progress.score = score;
+      progress.status = passed ? 'completed' : 'in_progress';
+    }
     progress.timeSpent += timeSpent || 0;
     await progress.save();
 

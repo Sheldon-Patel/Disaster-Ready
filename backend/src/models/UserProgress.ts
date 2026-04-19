@@ -1,15 +1,17 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IUserProgress } from '../types';
 
-interface IUserProgressDocument extends Omit<IUserProgress, '_id'>, Document {}
+interface IUserProgressDocument extends Omit<IUserProgress, '_id'>, Document { }
 
 const UserProgressSchema = new Schema<IUserProgressDocument>({
   userId: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: [true, 'User ID is required']
   },
   moduleId: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'DisasterModule',
     required: [true, 'Module ID is required']
   },
   status: {
@@ -44,11 +46,12 @@ const UserProgressSchema = new Schema<IUserProgressDocument>({
 
 // Compound index for efficient queries
 UserProgressSchema.index({ userId: 1, moduleId: 1 }, { unique: true });
+UserProgressSchema.index({ moduleId: 1 });
 UserProgressSchema.index({ status: 1 });
 UserProgressSchema.index({ completedAt: -1 });
 
 // Update completedAt when status changes to completed
-UserProgressSchema.pre('save', function(next) {
+UserProgressSchema.pre('save', function (next) {
   if (this.isModified('status') && this.status === 'completed' && !this.completedAt) {
     this.completedAt = new Date();
   }

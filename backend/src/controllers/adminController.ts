@@ -133,15 +133,8 @@ export const getDashboardAnalytics = async (req: AuthRequest, res: Response) => 
       {
         $lookup: {
           from: 'userprogresses',
-          let: { moduleIdStr: { $toString: '$_id' } },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $eq: ['$moduleId', '$$moduleIdStr'] },
-                ...(isTeacher ? { userId: { $in: schoolUserIds } } : {})
-              }
-            }
-          ],
+          localField: '_id',
+          foreignField: 'moduleId',
           as: 'progress'
         }
       },
@@ -337,16 +330,11 @@ export const getUsers = async (req: Request, res: Response) => {
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
         const detailedProgress = await UserProgress.aggregate([
-          { $match: { userId: user._id.toString() } },
-          {
-            $addFields: {
-              moduleIdObj: { $toObjectId: '$moduleId' }
-            }
-          },
+          { $match: { userId: user._id } },
           {
             $lookup: {
               from: 'disastermodules',
-              localField: 'moduleIdObj',
+              localField: 'moduleId',
               foreignField: '_id',
               as: 'module'
             }

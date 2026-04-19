@@ -28,7 +28,7 @@ const LeaderboardPage: React.FC = () => {
             }
             break;
           case 'grade':
-            dbLeaderboard = await gamificationService.getLeaderboard(100, undefined, user?.grade);
+            dbLeaderboard = await gamificationService.getLeaderboard(100, user?.school, user?.grade);
             break;
           default:
             dbLeaderboard = await gamificationService.getLeaderboard(100);
@@ -221,9 +221,9 @@ const LeaderboardPage: React.FC = () => {
                     <div className="w-full bg-gray-100 rounded-full h-2">
                       <div
                         className={`h-2 rounded-full transition-all duration-500 ${entry.rank === 1 ? 'bg-yellow-400' :
-                            entry.rank === 2 ? 'bg-gray-400' :
-                              entry.rank === 3 ? 'bg-orange-400' :
-                                entry.userId === user?._id ? 'bg-red-500' : 'bg-blue-400'
+                          entry.rank === 2 ? 'bg-gray-400' :
+                            entry.rank === 3 ? 'bg-orange-400' :
+                              entry.userId === user?._id ? 'bg-red-500' : 'bg-blue-400'
                           }`}
                         style={{ width: `${relativeProgress}%` }}
                       ></div>

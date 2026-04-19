@@ -10,7 +10,7 @@
     "build": "tsc",
     "seed": "node seed-users.js",
     "seed:ts": "ts-node src/scripts/seedDatabase.ts",
-    "seed:modules": "ts-node src/scripts/seedModules.ts",
+    "seed:modules": "npx tsx src/scripts/seedModules.ts",
     "seed:badges": "ts-node src/scripts/seedBadges.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
