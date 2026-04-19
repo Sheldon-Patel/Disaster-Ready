@@ -1,0 +1,879 @@
+ 
+ 
+Title:  KPI Misinterpretation Detection System  
+Submitted in partial fulfilment of the requirements of   
+MINI PROJECT   
+SEMESTER VI  
+for the degree of  
+BACHELOR OF ENGINEERING IN   
+COMPUTER ENGINEERING   
+by  
+Silas Shelly (202301051)  
+Shannel Dcosta (202301015)  
+Aidan Rebello (2024012007)  
+Aryan Gupta (202301029)  
+UNDER THE GUIDANCE  
+OF  
+Mr. Omprakash Yadav  
+(Assistant Professor)  
+  
+  
+Department of Computer Engineering,  Xavier Institute of Engineering, Mahim,  
+Mumbai - 400 016 University of Mumbai (AY: 2025 - 2026)   
+  
+
+ 
+  
+  
+Institute Vision and Mission   
+Vision of Institute  
+To nurture the joy of excellence in a world of high technology.  
+  
+Mission of Institute   
+To strive to match Global Standards in technical education by interaction with industry,   
+continuous training and development of quality of life.  
+   
+Department Vision and Mission   
+Vision of Computer Department   
+To nurture the joy of excellence in the world of Computer Engineering.  
+  
+Mission of Computer Department   
+M1:  To provide students the knowledge of computer engineering with related technical 
+skills to solve various computer engineering problems and to have industry interaction.  
+M2:  To motivate the students to acquire additional soft skills to sharpen their technical 
+and professional skills that make them employable.  
+M3:  To nurture social and professional ethics in our undergraduates and encourage them 
+to have lifelong learning.  
+  
+  
+
+ 
+  
+  
+Program Specific Objectives (PSO)   
+PSO1  The ability to understand,  analyze  and apply knowledge to address 
+computing problems.   
+PSO2  The ability to design and implement software solutions to meet the end 
+users requirements.   
+  
+  
+Program Educational Objectives (PEOs)   
+PEO1   Graduates will have the required knowledge of computer engineering, 
+to design and develop systems that can cater to a multi -disciplinary 
+environment.   
+PEO2   Graduates will be able to apply the art of self -learning to use the modern 
+tools in solving computer engineering problems.   
+PEO3   Graduates will be prepared in the field of computer engineering to have 
+lifelong -learning in the global and ethic context.   
+PEO4   Graduates will be able to inculcate professional and ethical attitude 
+with good leadership qualities and have commitment to social 
+responsibilities in their thought process.   
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+  
+  
+             Program Outcomes (PO): A graduate of Computer engineering will have the ability:  
+PO1  Engineering Knowledge: Apply knowledge of mathematics, natural science, computing, 
+engineering fundamentals and an engineering specialization as specified in WK1 to WK4 
+respectively to develop the solution of complex engineering problems.  
+PO2  Problem Analysis: Identify, formulate, review research literature and analyze complex engineering 
+problems reaching substantiated conclusions with consideration for sustainable development. 
+(WK1 to WK4)  
+PO3  Design/Development of Solutions: Design creative solutions for complex engineering problems 
+and design/develop systems/components/processes to meet identified needs with consideration for 
+the public health and safety, whole -life cost, net zero carbon, cult ure, society and environment as 
+required. (WK5)  
+PO4  Conduct Investigations of Complex Problems: Conduct investigations of complex engineering 
+problems using research -based knowledge including design of experiments, modelling, analysis & 
+interpretation of data to provide valid conclusions. (WK8).  
+PO5  Engineering Tool Usage: Create, select and apply appropriate techniques, resources and modern 
+engineering & IT tools, including prediction and modelling recognizing their limitations to solve 
+complex engineering problems. (WK2 and WK6)  
+PO6  The Engineer and The World: Analyze and evaluate societal and environmental aspects while 
+solving complex engineering problems for its impact on sustainability with reference to economy, 
+health, safety, legal framework, culture and environment. (WK1, WK5, and WK7).  
+PO7  Ethics: Apply ethical principles and commit to professional ethics, human values, diversity and 
+inclusion; adhere to national & international laws. (WK9)  
+PO8   Individual and Collaborative Team work: Function effectively as an individual, and as a member 
+or leader in diverse/multi -disciplinary teams.  
+PO9  Communication: Communicate effectively and inclusively within the engineering community and 
+society at large, such as being able to comprehend and write effective reports and design 
+documentation, make effective presentations considering cultural, language , and learning 
+differences.  
+PO10  Project Management and Finance: Apply knowledge and understanding of engineering 
+management principles and economic decision -making and apply these to one’s own work, as a 
+member and leader in a team, and to manage projects and in multidisciplinary environ ments.  
+PO11  Life-Long Learning: Recognize the need for, and have the preparation and ability for i ) independent 
+and life -long learning ii) adaptability to new and emerging technologies and iii) critical thinking in 
+the broadest context of technological change. (WK8)  
+  
+  
+
+ 
+  
+CERTIFICATE   
+  
+This is to certify that the Mini Project entitled “KPI Misinterpretation Detection System”  
+is a bonafide work of Silas Shelly (01), Shannel Dcosta (14),  Aidan Rebello (69) and Aryan  
+Gupta (26) submitted in partial fulfillment of the requirements of Mini Project, Semester – 
+VI, for the award of the degree of “ Bachelor of Engineering” in “Computer Engineering” .  
+  
+  
+  
+Mr. Omprakash Yadav  
+Guide  
+Assistant  Professor  
+                    
+  
+  
+  
+  
+        Dr. Sushama Khanvilkar                  Dr. Lata Ragha  
+    H.O.D Computer Engineering                                                            Principal  
+  
+  
+  
+
+ 
+  
+  
+MINI PROJECT APPROV AL  
+  
+This Mini Project entitled “ KPI Misinterpretation Detection System ” by Silas Shelly (01),  
+Shannel Dcosta (14),  Aidan Rebello (69) and  Aryan Gupta (26)  is approved for MINI 
+PROJECT SEMESTER: VI for the degree of “ Bachelor of Engineering ” in “ Computer 
+Engineering ”.  
+  
+  
+                             
+                        Examiners :  
+                                                     
+                                                        1._________________________  
+(External Examiner)  
+ 
+                                                        2._________________________  
+Mr. Omprakash Yadav  
+(Internal Examiner)                                
+                                                              
+Date:   
+Place:  Mumbai   
+ 
+ 
+
+ 
+Declaration  
+We declare that this written submission represents our ideas in our own words and where 
+others ideas or words have been included; we have adequately cited and referenced the 
+original sources. We also declare that we have adhered to all principles of academ ic honesty 
+and integrity and have not misrepresented or fabricated or falsified any idea/data/fact/source 
+in our submission understand that any violation of the above will be cause for disciplinary 
+action by the Institute and can also evoke penal action fr om the sources which have thus not 
+been properly cited or from whom proper permission has not been taken when needed.  
+  
+  
+  
+ 
+  
+Silas Shelly (01)  
+  
+ 
+Shannel Dcosta (15)  
+  
+                            _________________________  
+Aidan Rebello (69)  
+  
+                          _________________________  
+Aryan Gupta (26)   
+  
+  
+  
+Date:   
+  
+  
+  
+  
+ 
+Abstract  
+In the evolving landscape of data -driven decision -making, organizations rely heavily on Key Performance 
+Indicators (KPIs) to evaluate business performance and guide strategic actions. However, traditional analytics 
+systems often focus on isolated KPI value s or basic visualizations, which can lead to misinterpretation and 
+poor decision -making. To address these challenges, we propose “Metric Lies – KPI Misinterpretation 
+Detection System,” an intelligent analytics solution designed to analyze business KPIs and  identify misleading 
+patterns, conflicts, and anomalies. This system enhances how business analysts interpret performance metrics 
+by providing deeper, context -aware insights using artificial intelligence.   
+At the core of the system lies a comprehensive data processing pipeline that supports KPI data from structured 
+sources such as Excel files and databases. The system preprocesses the data through cleaning, normalization, 
+and feature extraction techniques. I t then analyzes key business metrics such as revenue growth, profit margin, 
+customer churn rate, customer acquisition cost (CAC), customer lifetime value (CLV), return on investment 
+(ROI), and cash flow. These KPIs are further categorized based on company size, including large -cap, midcap, 
+and small -cap organizations, to provide more context specific analysis.   
+For generating actionable insights, the system utilizes machine learning techniques such as anomaly detection 
+to identify unusual KPI behavior, correlation analysis to detect misleading relationships between metrics, and 
+classification models to label KPI performance as healthy, risky, or misleading. The processed insights are 
+then visualized using interactive dashboards and Power BI, enabling users to clearly understand KPI trends, 
+conflicts, and potential risks. This system ultimately helps organizations make more accurate, data -driven 
+decisions by identifying when metrics may present a false or incomplete picture of business performance.  
+  
+  
+  
+  
+  
+  
+ 
+ 
+Acknowledgement   
+We the students of Xavier Institute of Engineering, Mahim  of Third  Year Engineering  in 
+the department of Computer Engineering  have great pleasure in presenting our efforts of 
+developing the project named as “ KPI Misinterpretation Detection System ”.  
+  
+We would like to express our heartfelt gratitude to Dr. Sushama Khanvilkar , Head of the 
+Department , for providing us with inspiration, valuable guidance, and timely suggestions 
+throughout our Mini Project journey.  
+  
+Our immense appreciation also goes to our esteemed Guide Mr. Om prakash  Yadav  and 
+Coordinator Prof. Kavita Jain  for their unwavering support and the opportunity they 
+provided us to undertake this challenging project has been truly invaluable. This experience 
+not only allowed us to conduct extensive project work but also exposed us to a wealth of new 
+knowledge for w hich we are genuinely thankful.  
+  
+  
+  
+  
+  
+ 
+ 
+ 
+  
+  
+ 
+CONTENTS   
+ 
+ 
+ 
+Acknowledgment                     X 
+ 
+List of Figures                    XI 
+ 
+1  Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  .                  12  
+1.1  Introduction   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . 12  
+1.2  Motivation    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  .                                                         13  
+1.3  Problem Statement   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   14  
+1.4  Objectives   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     15  
+2  Literature Survey    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                        16  
+2.1  Survey of Existing System . . . . . . . . . . . . . . . . . . . . . . . . . . . .  16  
+2.2  Limitation Existing system or research gap . . . . . . . . . . . . . . .  16  
+2.3  Mini Project Contribution   . . . . . . . . . . . . . . . . . . . . . . . . . . . .  17  
+3  Proposed System . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  18 
+3.1  Architecture/ Framework   . . . . . . . . . . . . . . . . . . . . . . . . . . . .  18  
+3.2  Algorithm and Process Design . . . . . . . . . . . . . . . . . . . . . . . . .  19-20  
+3.3  Details of Hardware & Software . . . . . . . . . . . . . . . . . . . . . . .  21  
+3.4  PERT / GANTT / CPM Charts . . . . . . . . . . . . . . . . . . . . . . . . .  22-24  
+4  Results and Discussions . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  25-26  
+5  Conclusion and Future Scope . . . . . . . . . . . . . . . . . . . . . . . .  27  
+6  References  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . . 28  
+       
+ 
+ 
+ 
+ 
+ 
+List Of Figures  
+ 
+3.1.  Architecture/Framework . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . . . . . . . . 19 
+3.2.  Pert Chart . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . . . . . . . 23 
+ 3.3.  Gantt Chart . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . . . . . . . . . . . . . . . . . . . . .  . . . . . . . . . . 24 
+ 3.4.  CPM Chart . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25 
+            4.1.  KPI Sentinel dashboard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  .26 
+4.2.   KPI Predictions. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  . . . 26 
+          4.3.  Cross -KPI Matrix  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Lab Outcomes:  
+Sr. No.  Lab Outcomes  Bloom’s Taxonomy  
+On successful completion, of course, learner/student will be able to:   
+1  Identify and analyze  problems based on societal and 
+research needs, and evaluate the impact of solutions in 
+societal and environmental contexts for sustainable 
+development.  L2, L4, L5  
+2  Apply knowledge, skills, and standard engineering 
+practices to develop effective solutions to real -world 
+problems.  L3, L6  
+3  Develop interpersonal and teamwork skills, and function 
+effectively as a team member or leader in group activities.  L2, L3  
+4  Draw meaningful inferences from theoretical, 
+experimental, or simulation -based results.  L4  
+5  Demonstrate effective written and oral communication 
+skills in presenting ideas and project outcomes.  L1, L2, L3  
+6  Exhibit self -learning abilities and apply project 
+management principles, promoting continuous and 
+lifelong learning.  L2, L3, L6  
+Bloom’s Taxonomy Levels:  
+1 = Remembering, 2= Understanding, 3 = Applying, 4 = Analyzing, 5 = Evaluating, 6 =    Creating  
+LO-PO-PSO MAPPING:  
+  
+  PO1  PO2  PO3  PO4  PO5  PO6  PO7  PO8  PO9  PO10  PO11  PSO1  PSO2  
+LO1  2  3  2  2  -  3  -  -  -  -  2  3  2  
+LO2  3  2  3  -  2  2  -  -  -  -  -  3  3  
+LO3  -  -  -  -  -  -  2  3  2  2  -  2  2  
+LO4  2  3  -  3  2  -  -  2  2  3  3  3  2  
+LO5  -  -  -  -  -  -  -  2  3  2  2  2  2  
+LO6  -  -  -  -  -  -  -  2  3  3  3  2  3  
+Project topic: PO/PSO Mapping   
+  PO1  PO2  PO3  PO4  PO5  PO6  PO7  PO8  PO9  PO10  PO11  PSO1  PSO2  
+Project 
+Topic                            
+ 
+Chapter 1  
+Introduction  
+  
+1.1  Introduction:  
+  
+The modern business landscape has undergone a significant transformation with the rise of 
+data-driven decision -making, where organizations rely heavily on Key Performance 
+Indicators (KPIs) to evaluate performance and guide strategic actions. KPIs such as r evenue 
+growth, profit margin, customer churn, and return on investment provide measurable insights 
+into business operations. However, despite these advancements, many organizations still 
+analyze KPIs in isolation or rely on basic visualization tools, which  often leads to 
+misinterpretation and poor decision -making. This results in incorrect strategies, financial 
+losses, and inefficient resource allocation. Therefore, there is a growing need for an 
+intelligent system that can analyze KPIs in a more contextual  and comprehensive manner.  
+   
+In recent years, machine learning (ML) and data analytics techniques have shown great 
+potential in improving business intelligence systems. By automatically analyzing KPI data 
+across multiple dimensions, these technologies can identify hidden patterns, det ect 
+anomalies, and uncover relationships between different metrics. This project introduces 
+“Metric Lies – KPI Misinterpretation Detection System,” an intelligent analytics platform 
+designed to detect misleading KPI patterns and provide meaningful insights  for better 
+decision -making.   
+  
+The system processes structured KPI data from sources such as Excel files and databases, 
+followed by data preprocessing steps including cleaning, normalization, and feature 
+extraction. Key metrics such as revenue growth, profit margin, customer churn rate,  customer 
+acquisition cost (CAC), customer lifetime value (CLV), return on investment (ROI), and cash 
+flow are analyzed. These KPIs are further categorized based on company size —large -cap, 
+mid-cap, and small -cap—to enable more context -aware analysis.   
+  
+Machine learning techniques such as anomaly detection, correlation analysis, and 
+classification are applied to identify unusual trends, conflicting KPIs, and misleading 
+performance indicators. The results are then visualized using interactive dashboards an d 
+Power BI, allowing users to clearly interpret KPI behavior and make informed decisions. By 
+combining analytics, machine learning, and visualization, the system enhances the accuracy 
+and effectiveness of business analysis.  
+  
+The KPI system is a business analytics dashboard that 13nalyses  company KPIs to detect anomalies 
+and misleading metrics using rule -based and machine learning techniques
+  
+1.2 Motivation:  
+  
+In today’s data -driven business environment, organizations rely heavily on Key Performance 
+Indicators (KPIs) to evaluate performance and guide strategic decisions. However, with the 
+increasing volume and complexity of business data, analysts and decision -makers often face 
+challenges in correctly interpreting these metrics. Many times, KPIs are analyzed 
+individually without considering their relationships with other indicators, leading to 
+misleading conclusions. This results in poor decision -making, ineffici ent resource allocation, 
+and potential financial losses.   
+  
+While modern analytics tools and dashboards provide visual representations of KPIs, they 
+often lack the ability to detect deeper issues such as conflicting metrics, hidden patterns, or 
+false correlations. For example, a company may observe increasing reven ue while profit 
+margins decline, or high customer acquisition with equally high churn rates. Traditional 
+systems fail to highlight these contradictions effectively, making it difficult for analysts to 
+identify the true performance of the business.   
+  
+The motivation behind the Metric Lies – KPI Misinterpretation Detection System is to 
+develop an intelligent, data -driven solution that can automatically analyze KPIs and detect 
+misleading patterns. By leveraging machine learning techniques such as anomaly detection, 
+correlation analysis, and classification, the system aims to identify inconsistencies and 
+provide meaningful insights into business performance.   
+  
+The system processes structured KPI data and evaluates key metrics such as revenue growth, 
+profit margin, customer churn rate, customer acquisition cost (CAC), customer lifetime value 
+(CLV), return on investment (ROI), and cash flow. It also considers the context of company 
+size—large cap, mid -cap, and small -cap—to ensure more accurate and relevant analysis.   
+  
+The ultimate goal of this project is to assist business analysts and decision -makers in 
+understanding the true story behind their data. By highlighting misleading KPIs and 
+providing clear, actionable insights through dashboards and Power BI visualizations,  the 
+system enhances decision -making accuracy, reduces risks, and promotes more effective, 
+data-driven strategies in modern organizations.  
+  
+  
+  
+  
+  
+  
+  
+ 1.3 Problem Statement:  
+  
+The modern business environment generates a vast amount of data, and organizations rely 
+heavily on Key Performance Indicators (KPIs) to evaluate performance and make strategic 
+decisions. However, with the increasing complexity of business operations, analy sts often 
+struggle to interpret KPIs accurately. Traditional analytics systems primarily focus on 
+individual metrics or basic visualizations, which fail to capture the relationships and 
+dependencies between different KPIs. As a result, decision -makers may draw incorrect 
+conclusions from seemingly positive indicators.   
+  
+For instance, a company may observe an increase in revenue while profit margins decline, or 
+experience rapid customer acquisition alongside high churn rates. Such conflicting KPI 
+patterns are often overlooked in conventional systems, leading to misleading insights and 
+poor business decisions. Additionally, different types of companies —such as large -cap, 
+midcap, and small -cap—have varying priorities, making it even more challenging to interpret 
+KPIs correctly without contextual analysis.   
+  
+The fundamental problem lies in the lack of an intelligent system that can analyze KPIs 
+collectively, detect anomalies, and identify misleading or conflicting patterns. Existing tools 
+do not provide automated insights into whether a KPI truly reflects busi ness performance or 
+presents a false picture.   
+  
+To address this issue, the proposed system Metric Lies – KPI Misinterpretation Detection 
+System leverages machine learning and data analytics techniques to process KPI data from 
+structured sources such as Excel files. The system performs anomaly detection,  correlation 
+analysis, and classification to identify misleading metrics and highlight inconsistencies. It 
+then presents the results through interactive dashboards and Power BI visualizations, 
+enabling users to better understand business performance and ma ke accurate, data -driven 
+decisions.  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+  
+  
+1.4  Objectives:  
+ 
+• To design and develop an AI -based KPI analysis system capable of detecting misleading     
+patterns and misinterpretations in business metrics.   
+• To implement data ingestion from structured sources such as Excel files and databases for 
+processing KPI data.    
+• To apply machine learning techniques such as anomaly detection (Isolation Forest), 
+correlation analysis, and classification models to identify unusual trends and conflicting 
+KPIs.   
+• To analyze  key business metrics including revenue growth, profit margin, customer churn 
+rate, customer acquisition cost (CAC), customer lifetime value (CLV), return on 
+investment (ROI), and cash flow.   
+• To incorporate company segmentation (large -cap, mid -cap, small -cap) for context -aware 
+KPI analysis.   
+• To integrate Power BI dashboards for interactive visualization of KPI trends, anomalies, 
+and relationships.   
+• To develop a user -friendly web interface (frontend) for uploading data and viewing insights 
+without changing the existing UI design.   
+• To automate insight generation and alert users about misleading or risky KPI patterns.   
+• To improve decision -making accuracy by providing clear, data -driven insights and 
+reducing dependency on manual analysis.  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+Chapter 2  
+Literature Survey  
+  
+2.1. Survey of Existing System:  
+  
+Existing systems for business performance analysis, such as traditional BI tools and 
+dashboards, primarily focus on visualizing KPIs like revenue, profit, and growth. While 
+they help in monitoring performance, they lack intelligent analysis capabilities su ch as 
+detecting misleading KPI relationships, identifying anomalies, and predicting future 
+trends. Most systems depend on manual interpretation and do not integrate machine 
+learning techniques for automated insights. Additionally, they offer limited custom ization 
+and do not provide user -specific settings or real -time adaptive analysis. Hence, there is a 
+need for a more advanced system that combines visualization, anomaly detection, and KPI 
+prediction in a single platform.  
+  
+  
+2.2. Limitation Existing system or research gap:  
+  
+Despite advancements in business analytics and AI -based tools, most existing systems for KPI 
+analysis exhibit several key limitations:   
+• Lack of Contextual Analysis: Most tools analyze KPIs individually and fail to understand 
+relationships between metrics, leading to incomplete or misleading insights.   
+• No Detection of KPI Conflicts: Existing systems cannot identify contradictory patterns 
+such as high revenue growth with low profitability or high customer acquisition with high 
+churn rates.   
+• Over -Reliance on Visualization: Dashboards like Power BI and Tableau focus on 
+displaying data rather than interpreting it, requiring manual effort from analysts to derive 
+conclusions.   
+• Limited Use of AI for Interpretation: While some tools use machine learning for prediction, 
+they do not focus on detecting misleading KPIs, false correlations, or anomaly patterns.   
+• Lack of Business Context Awareness: Current systems do not differentiate between large -
+cap, mid -cap, and small -cap companies, resulting in generalized insights that may not be 
+accurate for all business types.   
+ 
+  
+  
+ 
+ 
+ 
+2.3. Mini Project Contribution:   
+   
+Silas Shelly   
+Developed core machine learning logic for KPI analysis, including anomaly detection, 
+correlation analysis, and classification of misleading metrics.    
+  
+Shannel D’Costa   
+Integrated the frontend with backend systems and ensured smooth data flow between user input 
+and analysis modules.    
+  
+Aidan Rebello   
+Built data preprocessing modules, including Excel data handling, cleaning, normalization, 
+and KPI feature extraction.    
+  
+Aryan Gupta   
+Designed and developed the frontend interface, including dashboard layout, user input pages, 
+and overall UI/UX.  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+ 
+  
+ 
+Chapter 3  
+Proposed System  
+  
+3.1. Architecture/ Framework:  
+  
+Fig 3.1: Architecture/Framework  
+
+ 
+ 
+3.2. Algorithm and Process Design:  
+1. Start   
+2. Load company KPI dataset from Excel/CSV or database.   
+3. Preprocess data (handle missing values, normalize if required).   
+4. For each company in dataset:   
+• Read KPI values ( revenue_growth, profit_margin, churn_rate, CAC, CLV , ROI, 
+cash_flow)   
+5. Apply rule -based checks:   
+• If revenue_growth ↑ and cash_flow ↓ → flag anomaly   
+• If CLV < CAC → flag anomaly   
+• If churn_rate high → flag anomaly   
+6. Apply machine learning model (Isolation Forest):   
+• Input KPI values   
+• Detect outliers/anomalies   
+7. Assign risk score (Low / Medium / High) based on anomalies.   
+8. Store results.   
+9. Apply prediction model:   
+• Use regression or trend analysis.   
+• Predict future KPI values.   
+10. Send processed data to frontend dashboard.   
+11. Display results (charts, tables, alerts).   
+12. Stop  
+  
+Process Workflow:   
+1. Data Input Process:   
+• User uploads Excel/CSV file or system loads predefined data • Data includes 
+company KPIs   
+ 
+2. Data Processing Process:   
+• Clean and validate data   
+• Convert into structured format using pandas   
+ 
+3. Anomaly Detection Process:   
+• Apply rule -based logic   
+• Apply ML model (Isolation Forest)   
+• Identify misleading KPI relationships   
+ 
+ 
+  
+ 
+ 
+4. Prediction Process:   
+• Use regression or simple trend formulas   
+• Forecast future KPI values 19  
+ 
+5. Data Storage Process:   
+• Store data in CSV/SQLite   
+• Maintain processed results   
+ 
+6. Visualization Process:  • Send data via API to frontend   
+• Display:   
+• KPI dashboard    
+• Charts    
+• Anomaly alerts  
+ 
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+ 
+  
+ 
+  
+ 3.3.  Details of Hardware & Software:  
+  
+Hardware Requirements:   
+• Processor:  Intel i3 or above   
+• RAM:  Minimum 4 GB (8 GB recommended)   
+• Storage:  Minimum 500 MB free space   
+• Display:  1366 × 768 resolution or higher   
+• Network:  Internet connection (for libraries and updates)   
+ 
+Software Requirements:   
+• Operating System:    
+Windows 10/11 or Linux (Ubuntu)   
+  
+• Programming Language:    
+Python (for backend processing and ML)   
+  
+• Backend Framework:    
+Flask (for API development)   
+  
+• Frontend Technologies:    
+HTML, CSS, JavaScript  
+Chart.js (for data visualization)  
+   
+• Libraries & Tools:    
+pandas (data processing)   
+scikit -learn (machine learning – Isolation  Forest)  
+openpyxl (Excel file handling)   
+  
+• Database:    
+SQLite / CSV (for storing KPI data)   
+  
+• Development Tools:   VS Code (code editor)   
+Web Browser (Chrome/Edge)  
+  
+  
+  
+  
+  
+ 
+ 
+  
+3.4.  PERT / GANTT / CPM Charts:  
+  
+PERT Chart:  
+  
+  
+Fig 3.2: PERT Chart  
+  
+  
+  
+  
+  
+ 
+ 
+
+ 
+GANTT Chart:  
+Task  Duration  Week 1  Week 2  Week 3  Week 4  
+Requirement Analysis  3 days  ███        
+System Design  4 days  ████        
+Backend Development  6 days    
+██████      
+Frontend Development  6 days    
+██████      
+Integration  3 days      
+███    
+Testing & Debugging  4 days      
+████    
+Final Deployment & Report  4 days        
+████  
+  
+Fig 3.3: Gantt Chart  
+  
+  
+  
+  
+  
+ 
+  
+ 
+CPM Charts:  
+  
+  
+  
+Fig 3. 4: CPM Chart  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+ 
+Chapter 4  
+Results  and Discussions  
+4.1 Results:  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Fig 4.1: KPI Sentinel dashboard  
+ 
+ 
+ 
+Fig 4.2: KPI Predictions  
+
+ 
+Fig 4.3: Cross -KPI Matrix  
+ 
+4.2 Discussions:  
+• Company KPI data was loaded and processed successfully.   
+• Rule -based and machine learning methods were used to detect anomalies.   
+• System correctly identified misleading KPIs and assigned risk levels.   
+• KPI prediction module generated future trends.   
+• Results were displayed using an interactive dashboard with charts and tables.   
+Performance Metrics:  
+• Accuracy: Measures how correctly anomalies are detected.   
+• Precision: Checks how many detected anomalies are actually correct.   
+• Recall: Measures how many real anomalies are identified.   
+• F1-Score: Balances precision and recall.   
+• MAE (Mean Absolute Error): Measures prediction error of KPIs.   
+• Response Time: Time taken to process data and show results.  
+
+ 
+ 
+Chapter 5  
+Conclusion and Future Scope   
+ 
+Conclusion:   
+The KPI Sentinel system successfully analyzes  company performance using multiple KPIs and 
+detects misleading patterns through rule -based and machine learning techniques. It provides risk 
+assessment, anomaly detection, and KPI prediction in an interactive dashboard, helping users make 
+better business decisions. The system is efficient, user -friendly, and suitable for real -time business 
+analytics. The KPI Sentinel system provides an effective solution for analyzing  company 
+performance by evaluating multiple KPIs together instead of in isolation. It succ essfully identifies 
+misleading patterns using rule -based logic and machine learning techniques such as Isolation 
+Forest. The system also includes a prediction module that forecasts future KPI trends, helping in 
+proactive decision -making. With its interacti ve dashboard and clear visualization of results, the 
+system enhances understanding of business performance and supports better financial analysis. 
+Overall, it is a reliable, efficient, and user -friendly tool for detecting KPI misinterpretation and 
+improvin g business insights.  
+  
+Future Scope:  
+The KPI Sentinel system can be further enhanced by integrating real -time data sources such as 
+financial APIs to provide live company insights. Advanced machine learning models can be 
+implemented to improve prediction accuracy and enable deeper trend analys is. The system can 
+also be expanded with features like user role management, cloud deployment, and mobile 
+application support for wider accessibility. Additionally, incorporating AI -based automated 
+insights and natural language summaries can help users bet ter understand complex KPI 
+relationships and make faster business decisions.  
+  
+  
+  
+  
+  
+ 
+ 
+ 
+  
+References  
+  
+[1]. Breunig, M. M., Kriegel, H. P., Ng, R. T., & Sander, J. (2000). LOF: Identifying density -based local       
+outliers . ACM SIGMOD.   
+[2]. Liu, F. T., Ting, K. M., & Zhou, Z. H. (2008). Isolation Forest . IEEE International Conference 
+on Data Mining.   
+[3]. Han, J., Kamber, M., & Pei, J. (2011). Data Mining: Concepts and Techniques  (3rd ed.).  
+Morgan Kaufmann.  
+[4]. scikit -learn Developers. (2024). Scikit -learn: Machine Learning in Python . Retrieved from 
+https://scikit -learn.org    
+[5]. Flask Documentation. (2024). Flask Web Development Framework . Retrieved from 
+https://flask.palletsprojects.com    
+[6]. pandas Documentation. (2024). Pandas: Data Analysis Library . Retrieved from 
+https://pandas.pydata.org    
+[7]. Chart.js Documentation. (2024). Chart.js Visualization Library . Retrieved from 
+https://www.chartjs.org    
+[8]. Chart.js Documentation. (2024). Chart.js Visualization Library . Retrieved from 
+https://www.chartjs.org   
+  
