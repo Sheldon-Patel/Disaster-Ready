@@ -28,7 +28,10 @@ body {
   scroll-behavior: smooth;
 }
 
-img, video, canvas, svg {
+img,
+video,
+canvas,
+svg {
   max-width: 100%;
   height: auto;
 }
@@ -446,5 +449,19 @@ code {
   @page {
     size: landscape;
     margin: 0mm;
+  }
+}
+
+/* Utility to hide scrollbars but keep functionality */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }

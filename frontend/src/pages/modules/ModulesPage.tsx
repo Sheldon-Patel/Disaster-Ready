@@ -114,12 +114,12 @@ const ModulesPage: React.FC = () => {
           {/* Disaster Type Filter */}
           <div className="mb-4">
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Filter by Disaster Type</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
               {disasterTypes.map((type) => (
                 <button
                   key={type.value}
                   onClick={() => setSelectedType(type.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border-2 ${selectedType === type.value
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border-2 whitespace-nowrap ${selectedType === type.value
                     ? `${type.color} border-current scale-105 shadow-sm`
                     : 'bg-gray-50 text-gray-600 border-transparent hover:bg-gray-100'
                     }`}
@@ -133,12 +133,12 @@ const ModulesPage: React.FC = () => {
           {/* Difficulty Filter */}
           <div>
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Filter by Difficulty</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
               {difficultyLevels.map((level) => (
                 <button
                   key={level.value}
                   onClick={() => setSelectedDifficulty(level.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border-2 ${selectedDifficulty === level.value
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border-2 whitespace-nowrap ${selectedDifficulty === level.value
                     ? `${level.color} border-current scale-105 shadow-sm`
                     : 'bg-gray-50 text-gray-600 border-transparent hover:bg-gray-100'
                     }`}
