@@ -184,7 +184,7 @@ export const getGlobalLeaderboard = async (req: Request, res: Response) => {
               $match: {
                 $expr: {
                   $and: [
-                    { $eq: ['$userId', { $toString: '$$userId' }] },
+                    { $eq: ['$userId', '$$userId'] },
                     { $eq: ['$status', 'completed'] }
                   ]
                 }
@@ -277,7 +277,7 @@ export const getSchoolLeaderboard = async (req: Request, res: Response) => {
               $match: {
                 $expr: {
                   $and: [
-                    { $eq: ['$userId', { $toString: '$$userId' }] },
+                    { $eq: ['$userId', '$$userId'] },
                     { $eq: ['$status', 'completed'] }
                   ]
                 }

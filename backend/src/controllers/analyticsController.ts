@@ -56,9 +56,9 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
     // Learning Analytics
     const [totalModules, totalModuleCompletions, avgModuleScore] = await Promise.all([
       DisasterModule.countDocuments(),
-      UserProgress.countDocuments({ completed: true }),
+      UserProgress.countDocuments({ status: 'completed' }),
       UserProgress.aggregate([
-        { $match: { completed: true } },
+        { $match: { status: 'completed' } },
         { $group: { _id: null, avgScore: { $avg: '$score' } } }
       ]).then(result => result[0]?.avgScore || 0)
     ]);
@@ -97,8 +97,8 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
 
     const [userRegistrations, moduleCompletions, drillSessions] = await Promise.all([
       getTimeSeriesQuery(User, 'createdAt'),
-      getTimeSeriesQuery(UserProgress.find({ completed: true }), 'updatedAt'),
-      getTimeSeriesQuery(DrillSession.find({ completed: true }), 'createdAt')
+      getTimeSeriesQuery(UserProgress.find({ status: 'completed' }), 'updatedAt'),
+      getTimeSeriesQuery(DrillSession.find({ isCompleted: true }), 'createdAt')
     ]);
 
     // Performance metrics by disaster type
@@ -106,7 +106,7 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
       {
         $lookup: {
           from: 'disastermodules',
-          localField: 'module',
+          localField: 'moduleId',
           foreignField: '_id',
           as: 'moduleData'
         }
@@ -140,7 +140,7 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
           _id: '$userData.school',
           avgScore: { $avg: '$score' },
           totalCompletions: { $sum: 1 },
-          uniqueUsers: { $addToSet: '$user' }
+          uniqueUsers: { $addToSet: '$userId' }
         }
       },
       {
@@ -312,28 +312,28 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
     // Learning progress for school students
     const [moduleProgress, drillProgress] = await Promise.all([
       UserProgress.find({
-        user: { $in: studentIds },
+        userId: { $in: studentIds },
         updatedAt: { $gte: start, $lte: end }
-      }).populate('user', 'name grade').populate('module', 'title type'),
+      }).populate('userId', 'name grade').populate('moduleId', 'title type'),
       DrillSession.find({
-        user: { $in: studentIds },
+        userId: { $in: studentIds },
         createdAt: { $gte: start, $lte: end }
-      }).populate('user', 'name grade').populate('drill', 'title type')
+      }).populate('userId', 'name grade')
     ]);
 
     // Class-wise performance
     const performanceByGrade = await UserProgress.aggregate([
       {
         $match: {
-          user: { $in: studentIds },
-          completed: true,
+          userId: { $in: studentIds },
+          status: 'completed',
           updatedAt: { $gte: start, $lte: end }
         }
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'user',
+          localField: 'userId',
           foreignField: '_id',
           as: 'userData'
         }
@@ -359,13 +359,13 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
     const topStudents = await UserProgress.aggregate([
       {
         $match: {
-          user: { $in: studentIds },
-          completed: true
+          userId: { $in: studentIds },
+          status: 'completed'
         }
       },
       {
         $group: {
-          _id: '$user',
+          _id: '$userId',
           avgScore: { $avg: '$score' },
           totalCompletions: { $sum: 1 },
           totalXP: { $sum: '$xpEarned' }
@@ -769,11 +769,11 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
 
     // Training completion rates
     const trainingCompletion = await UserProgress.aggregate([
-      { $match: { completed: true, updatedAt: { $gte: start, $lte: end } } },
+      { $match: { status: 'completed', updatedAt: { $gte: start, $lte: end } } },
       {
         $lookup: {
           from: 'users',
-          localField: 'user',
+          localField: 'userId',
           foreignField: '_id',
           as: 'userData'
         }
@@ -783,7 +783,7 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
       {
         $lookup: {
           from: 'disastermodules',
-          localField: 'module',
+          localField: 'moduleId',
           foreignField: '_id',
           as: 'moduleData'
         }
@@ -803,11 +803,11 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
 
     // Emergency preparedness metrics
     const preparednessMetrics = await DrillSession.aggregate([
-      { $match: { completed: true, createdAt: { $gte: start, $lte: end } } },
+      { $match: { isCompleted: true, createdAt: { $gte: start, $lte: end } } },
       {
         $lookup: {
           from: 'users',
-          localField: 'user',
+          localField: 'userId',
           foreignField: '_id',
           as: 'userData'
         }
