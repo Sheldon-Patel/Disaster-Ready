@@ -106,7 +106,7 @@ async function main() {
             $or: [
                 { role: 'teacher' },
                 { email: adminEmail },
-                { email: { $in: ['admin@demo.com', 'teacher@demo.com', 'student@demo.com', 'parent@demo.com'] } }
+                { email: { $in: ['admin@demo.com', 'teacher@demo.com', 'student@demo.com'] } }
             ]
         });
         console.log(`🗑️  Removed ${deleteResult.deletedCount} old admin and teacher accounts`);

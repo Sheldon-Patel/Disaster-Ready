@@ -189,12 +189,6 @@ const DashboardPage: React.FC = () => {
           primaryAction: { text: 'Teacher Panel', link: '/teacher' },
           secondaryAction: { text: 'Create Drill', link: '/drills' },
         };
-      case 'parent':
-        return {
-          description: "Monitor your child's safety education progress",
-          primaryAction: { text: 'View Progress', link: '/profile' },
-          secondaryAction: { text: 'Emergency Contacts', link: '/emergency' },
-        };
       default:
         return {
           description: 'Continue your disaster preparedness education',

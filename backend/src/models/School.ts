@@ -102,7 +102,6 @@ export interface ISchool {
     totalDrillsCompleted: number;
     averageDrillScore: number;
     studentEngagement: number;
-    parentEngagement: number;
     lastActiveDate: Date;
   };
   isActive: boolean;
@@ -406,10 +405,6 @@ const SchoolSchema = new Schema<ISchoolDocument>({
       type: Number,
       default: 0
     },
-    parentEngagement: {
-      type: Number,
-      default: 0
-    },
     lastActiveDate: {
       type: Date,
       default: Date.now
@@ -434,40 +429,40 @@ SchoolSchema.index({ 'subscription.isActive': 1 });
 SchoolSchema.index({ 'preparedness.overallScore': -1 });
 
 // Virtual for full address
-SchoolSchema.virtual('fullAddress').get(function(this: ISchoolDocument) {
+SchoolSchema.virtual('fullAddress').get(function (this: ISchoolDocument) {
   return `${this.address.street}, ${this.address.city}, ${this.address.district}, Punjab - ${this.address.pincode}`;
 });
 
 // Virtual for total occupancy
-SchoolSchema.virtual('totalOccupancy').get(function(this: ISchoolDocument) {
+SchoolSchema.virtual('totalOccupancy').get(function (this: ISchoolDocument) {
   return this.infrastructure.totalStudents + this.infrastructure.totalTeachers + this.infrastructure.totalStaff;
 });
 
 // Method to calculate preparedness score
-SchoolSchema.methods.calculatePreparednessScore = async function(): Promise<number> {
+SchoolSchema.methods.calculatePreparednessScore = async function (): Promise<number> {
   let score = 0;
-  
+
   // Equipment status score (25%)
   const equipmentScores = { excellent: 25, good: 20, fair: 15, poor: 5 };
   score += equipmentScores[this.preparedness.equipmentStatus] || 0;
-  
+
   // Staff training score (25%)
   const trainingScores = { expert: 25, advanced: 20, intermediate: 15, basic: 10 };
   score += trainingScores[this.preparedness.staffTrainingLevel] || 0;
-  
+
   // Student participation score (25%)
   score += (this.preparedness.studentParticipation * 0.25);
-  
+
   // Drill frequency score (25%)
   const frequencyScores = { weekly: 25, monthly: 20, quarterly: 15, yearly: 10 };
   score += frequencyScores[this.preparedness.drillFrequency] || 0;
-  
+
   this.preparedness.overallScore = Math.round(score);
   return this.preparedness.overallScore;
 };
 
 // Method to get overall hazard level
-SchoolSchema.methods.getHazardLevel = function(): string {
+SchoolSchema.methods.getHazardLevel = function (): string {
   const risks = [
     this.hazardProfile.floodRisk,
     this.hazardProfile.earthquakeRisk,
@@ -475,20 +470,20 @@ SchoolSchema.methods.getHazardLevel = function(): string {
     this.hazardProfile.cycloneRisk,
     this.hazardProfile.industrialRisk
   ];
-  
+
   const riskLevels = { low: 1, medium: 2, high: 3, critical: 4 };
   const maxRisk = Math.max(...risks.map(risk => riskLevels[risk] || 1));
-  
+
   return Object.keys(riskLevels).find(key => riskLevels[key] === maxRisk) || 'low';
 };
 
 // Method to schedule next drill based on frequency
-SchoolSchema.methods.scheduleNextDrill = function(): Date {
+SchoolSchema.methods.scheduleNextDrill = function (): Date {
   const lastDrill = this.preparedness.lastDrillDate || new Date();
   const frequency = this.preparedness.drillFrequency;
-  
+
   const nextDrill = new Date(lastDrill);
-  
+
   switch (frequency) {
     case 'weekly':
       nextDrill.setDate(nextDrill.getDate() + 7);
@@ -503,12 +498,12 @@ SchoolSchema.methods.scheduleNextDrill = function(): Date {
       nextDrill.setFullYear(nextDrill.getFullYear() + 1);
       break;
   }
-  
+
   return nextDrill;
 };
 
 // Update analytics on save
-SchoolSchema.pre('save', function(next) {
+SchoolSchema.pre('save', function (next) {
   this.analytics.lastActiveDate = new Date();
   next();
 });

@@ -805,31 +805,22 @@ export const seedFireModule = async () => {
 
         videos: [
           {
-            id: 'fire_prevention',
-            title: 'Fire Prevention in Schools and Homes',
-            description: 'Learn how to prevent fires before they start',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+            id: 'fire_intro',
+            title: 'Fire Safety Basics',
+            description: 'Learn about fire behavior and detection',
+            url: 'https://drive.google.com/file/d/1tBhvfnK2_T5OgbhF0pEGcJwKu1Wf1hng/preview',
             thumbnail: '/images/thumbnails/fire-prevention.jpg',
-            duration: 240,
-            section: 'preventionMeasures'
+            duration: 180,
+            section: 'introduction'
           },
           {
-            id: 'fire_evacuation',
-            title: 'School Fire Evacuation Procedures',
-            description: 'Safe and orderly evacuation during fire emergencies',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+            id: 'fire_prep',
+            title: 'Fire Prevention and Preparedness',
+            description: 'Essential steps to prevent and prepare for fire emergencies',
+            url: 'https://drive.google.com/file/d/1P27Nz4DsUi_BkPupP8c-OB7voGZCeN1c/preview',
             thumbnail: '/images/thumbnails/fire-evacuation.jpg',
-            duration: 200,
-            section: 'duringDisaster'
-          },
-          {
-            id: 'stop_drop_roll',
-            title: 'Stop, Drop, and Roll Technique',
-            description: 'What to do if your clothes catch fire',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-            thumbnail: '/images/thumbnails/stop-drop-roll.jpg',
-            duration: 90,
-            section: 'duringDisaster'
+            duration: 210,
+            section: 'preventionMeasures'
           }
         ]
       },
@@ -1795,29 +1786,20 @@ export const seedTornadoModule = async () => {
         videos: [
           {
             id: 'tornado_intro',
-            title: 'Understanding Tornadoes and Severe Storms',
-            description: 'Learn how tornadoes form, their warning signs, and the tornado saffir-simpson scale',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+            title: 'Understanding Tornadoes',
+            description: 'Recognizing warning signs and tornado basics',
+            url: 'https://drive.google.com/file/d/1cqJAD1sBRUcMPQaP0LYmYyzNJXeSZQO9/preview',
             thumbnail: '/images/thumbnails/tornado-intro.jpg',
-            duration: 240,
+            duration: 200,
             section: 'introduction'
           },
           {
-            id: 'tornado_shelter',
-            title: 'Finding Safe Shelter During a Tornado',
-            description: 'Step-by-step guide to identifying and reaching the safest shelter',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+            id: 'tornado_prep',
+            title: 'Tornado Preparedness and Shelter',
+            description: 'How to prepare and find safe shelter during tornado warnings',
+            url: 'https://drive.google.com/file/d/1bKaqR-kPD8rth99274lTTieTFtyQ0qg7/preview',
             thumbnail: '/images/thumbnails/tornado-shelter.jpg',
-            duration: 180,
-            section: 'preventionMeasures'
-          },
-          {
-            id: 'tornado_action',
-            title: 'What To Do When a Tornado Strikes',
-            description: 'Real-time actions to take during a tornado emergency',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-            thumbnail: '/images/thumbnails/tornado-action.jpg',
-            duration: 200,
+            duration: 190,
             section: 'preventionMeasures'
           }
         ]
@@ -2028,29 +2010,20 @@ export const seedGasLeakModule = async () => {
         videos: [
           {
             id: 'gas_intro',
-            title: 'Understanding Gas Hazards at Home',
-            description: 'Learn about natural gas properties, why leaks are dangerous, and how to detect them',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+            title: 'Gas Hazard Awareness',
+            description: 'Identifying gas leak risks and odors',
+            url: 'https://drive.google.com/file/d/1khM8I1O6bNzCLdtnjxO_JdBaUjivMa-G/preview',
             thumbnail: '/images/thumbnails/gas-leak.jpg',
-            duration: 210,
+            duration: 180,
             section: 'introduction'
           },
           {
-            id: 'gas_prevention',
-            title: 'Gas Safety Prevention and Maintenance',
-            description: 'Proper maintenance of gas appliances and how to use shut-off valves',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+            id: 'gas_prep',
+            title: 'Gas Safety and Leak Preparedness',
+            description: 'Prevention strategies and correct emergency response',
+            url: 'https://drive.google.com/file/d/1ROmyMdJoQW-35R0ownLYR3xveiGsxZoY/preview',
             thumbnail: '/images/thumbnails/gas-maintenance.jpg',
-            duration: 195,
-            section: 'preventionMeasures'
-          },
-          {
-            id: 'gas_response',
-            title: 'Responding to a Gas Leak Emergency',
-            description: 'Step-by-step guide to evacuating safely when you detect a gas leak',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            thumbnail: '/images/thumbnails/gas-evacuation.jpg',
-            duration: 180,
+            duration: 210,
             section: 'preventionMeasures'
           }
         ]
@@ -2275,15 +2248,6 @@ export const seedCollapseModule = async () => {
             thumbnail: '/images/thumbnails/building-safety.jpg',
             duration: 220,
             section: 'preventionMeasures'
-          },
-          {
-            id: 'collapse_rescue',
-            title: 'Search and Rescue Operations',
-            description: 'How rescue teams locate survivors and what to expect during a structural emergency rescue',
-            url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-            thumbnail: '/images/thumbnails/search-rescue.jpg',
-            duration: 260,
-            section: 'afterDisaster'
           }
         ]
       },

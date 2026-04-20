@@ -34,7 +34,7 @@ export const registerSchool = async (req: Request, res: Response) => {
     } = req.body;
 
     // Check if school already exists
-    const existingSchool = await School.findOne({ 
+    const existingSchool = await School.findOne({
       $or: [
         { name: name.trim(), 'address.district': address.district },
         { 'contact.email': contact.email }
@@ -107,14 +107,14 @@ export const registerSchool = async (req: Request, res: Response) => {
 
   } catch (error: any) {
     console.error('School registration error:', error);
-    
+
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
         message: 'School code or contact email already exists'
       });
     }
-    
+
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map((err: any) => err.message);
       return res.status(400).json({
@@ -287,7 +287,7 @@ export const updateSchool = async (req: AuthRequest, res: Response) => {
 
   } catch (error: any) {
     console.error('Update school error:', error);
-    
+
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map((err: any) => err.message);
       return res.status(400).json({
@@ -444,7 +444,6 @@ export const getSchoolAnalytics = async (req: AuthRequest, res: Response) => {
       },
       engagement: {
         studentEngagement: school.analytics.studentEngagement,
-        parentEngagement: school.analytics.parentEngagement,
         totalDrillsCompleted: school.analytics.totalDrillsCompleted,
         averageDrillScore: school.analytics.averageDrillScore
       },
@@ -549,7 +548,7 @@ export const findNearbySchools = async (req: Request, res: Response) => {
         school.address.coordinates!.latitude,
         school.address.coordinates!.longitude
       );
-      
+
       (school as any).distance = distance;
       return distance <= Number(radius);
     }).sort((a, b) => (a as any).distance - (b as any).distance)

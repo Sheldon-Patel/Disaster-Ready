@@ -30,7 +30,6 @@ import HelpCenterPage from './pages/support/HelpCenterPage';
 import ContactPage from './pages/support/ContactPage';
 import ReportIssuePage from './pages/support/ReportIssuePage';
 import EvacuationVisualizationPage from './pages/drills/EvacuationVisualizationPage';
-import FamilyDashboard from './pages/family/FamilyDashboard';
 import AboutUsPage from './pages/AboutUsPage';
 
 // Styles
@@ -97,11 +96,6 @@ function App() {
                       </ProtectedRoute>
                     } />
 
-                    <Route path="/family" element={
-                      <ProtectedRoute>
-                        <FamilyDashboard />
-                      </ProtectedRoute>
-                    } />
 
                     <Route path="/profile" element={
                       <ProtectedRoute>

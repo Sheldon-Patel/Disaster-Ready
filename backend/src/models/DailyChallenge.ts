@@ -17,7 +17,7 @@ export interface IDailyChallenge extends Document {
     participantCount?: number; // for social challenges
   };
   targetAudience: {
-    roles: ('student' | 'teacher' | 'parent')[];
+    roles: ('student' | 'teacher')[];
     grades?: string[];
     districts?: string[];
   };
@@ -147,7 +147,7 @@ const dailyChallengeSchema = new Schema<IDailyChallenge>({
   targetAudience: {
     roles: [{
       type: String,
-      enum: ['student', 'teacher', 'parent'],
+      enum: ['student', 'teacher'],
       required: true
     }],
     grades: [{
@@ -381,23 +381,23 @@ userStreakSchema.index({ lastActivity: 1 });
 userStreakSchema.index({ currentStreak: -1 });
 
 // Middleware to update streak when challenge is completed
-userChallengeSchema.post('save', async function(doc: IUserChallenge) {
+userChallengeSchema.post('save', async function (doc: IUserChallenge) {
   if (doc.status === 'completed' && doc.isModified('status')) {
     try {
       const UserStreak = mongoose.model('UserStreak');
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
-      const streak = await UserStreak.findOne({ 
-        user: doc.user, 
-        type: 'daily_challenge' 
+
+      const streak = await UserStreak.findOne({
+        user: doc.user,
+        type: 'daily_challenge'
       });
-      
+
       if (streak) {
         const lastActivityDate = new Date(streak.lastActivity);
         lastActivityDate.setHours(0, 0, 0, 0);
         const daysDiff = Math.floor((today.getTime() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24));
-        
+
         if (daysDiff === 1) {
           // Consecutive day - increment streak
           streak.currentStreak += 1;
@@ -410,10 +410,10 @@ userChallengeSchema.post('save', async function(doc: IUserChallenge) {
           streak.currentStreak = 1;
           streak.streakStartDate = today;
         }
-        
+
         streak.lastActivity = new Date();
         streak.totalActiveDays += 1;
-        
+
         // Check for milestone achievements
         const milestoneThresholds = [3, 7, 14, 30, 60, 100];
         for (const threshold of milestoneThresholds) {
@@ -431,7 +431,7 @@ userChallengeSchema.post('save', async function(doc: IUserChallenge) {
             }
           }
         }
-        
+
         await streak.save();
       } else {
         // Create new streak record
@@ -452,17 +452,17 @@ userChallengeSchema.post('save', async function(doc: IUserChallenge) {
 });
 
 // Static methods for challenge management
-dailyChallengeSchema.statics.getActiveChallengesForUser = function(userId: string, userRole: string, userGrade?: string, userDistrict?: string) {
+dailyChallengeSchema.statics.getActiveChallengesForUser = function (userId: string, userRole: string, userGrade?: string, userDistrict?: string) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const query: any = {
     isActive: true,
     validDate: { $lte: today },
     expiryDate: { $gt: today },
     'targetAudience.roles': userRole
   };
-  
+
   if (userGrade) {
     query['$or'] = [
       { 'targetAudience.grades': { $exists: false } },
@@ -470,7 +470,7 @@ dailyChallengeSchema.statics.getActiveChallengesForUser = function(userId: strin
       { 'targetAudience.grades': userGrade }
     ];
   }
-  
+
   if (userDistrict) {
     query['$or'] = query['$or'] || [];
     query['$or'].push(
@@ -479,7 +479,7 @@ dailyChallengeSchema.statics.getActiveChallengesForUser = function(userId: strin
       { 'targetAudience.districts': userDistrict }
     );
   }
-  
+
   return this.find(query).populate('relatedContent.moduleId relatedContent.drillId');
 };
 

@@ -40,7 +40,7 @@ export const handleChat = async (req: AuthRequest, res: Response) => {
         1. ONLY discuss disaster-related topics (Earthquakes, Floods, Fires, Cyclones, Tsunami, First Aid, Emergency Bags, etc.).
         2. If a student asks about math, coding, history, celebrities, or anything NOT related to disaster safety, politely redirect them: "I'm only trained to keep you safe from disasters! Let's get back to safety. Do you have any questions about [Fire Safety/Earthquakes/Floods]?"
         3. Use simple, encouraging language. Keep responses concise and easy for a child to understand.
-        4. Never give dangerous advice. Always emphasize following instructions from teachers and parents.`
+        4. Never give dangerous advice. Always emphasize following instructions from teachers.`
         });
 
         // Gemini API requires history to start with a 'user' message and strictly alternate.

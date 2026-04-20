@@ -8,7 +8,6 @@ import School from '../models/School';
 import DisasterModule from '../models/DisasterModule';
 import { VirtualDrill } from '../models/VirtualDrill';
 import { DailyChallenge, UserChallenge, UserStreak } from '../models/DailyChallenge';
-import FamilyRelationship from '../models/FamilyRelationship';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -29,11 +28,11 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
     // User Analytics
     const [totalUsers, newUsersThisPeriod, activeUsersThisPeriod] = await Promise.all([
       User.countDocuments(),
-      User.countDocuments({ 
-        createdAt: { $gte: start, $lte: end } 
+      User.countDocuments({
+        createdAt: { $gte: start, $lte: end }
       }),
-      User.countDocuments({ 
-        lastLogin: { $gte: start, $lte: end } 
+      User.countDocuments({
+        lastLogin: { $gte: start, $lte: end }
       })
     ]);
 
@@ -83,11 +82,11 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
 
     // Time-series data for charts
     const getTimeSeriesQuery = (collection: any, dateField: string) => {
-      const groupBy = granularity === 'hour' 
+      const groupBy = granularity === 'hour'
         ? { $dateToString: { format: '%Y-%m-%d %H:00', date: `$${dateField}` } }
         : granularity === 'week'
-        ? { $dateToString: { format: '%Y-W%U', date: `$${dateField}` } }
-        : { $dateToString: { format: '%Y-%m-%d', date: `$${dateField}` } };
+          ? { $dateToString: { format: '%Y-W%U', date: `$${dateField}` } }
+          : { $dateToString: { format: '%Y-%m-%d', date: `$${dateField}` } };
 
       return collection.aggregate([
         { $match: { [dateField]: { $gte: start, $lte: end } } },
@@ -197,19 +196,6 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
       }
     ]);
 
-    // Family engagement metrics
-    const familyStats = await FamilyRelationship.aggregate([
-      {
-        $match: { isVerified: true }
-      },
-      {
-        $group: {
-          _id: null,
-          totalFamilyLinks: { $sum: 1 },
-          avgChildrenPerParent: { $avg: { $size: '$children' } }
-        }
-      }
-    ]);
 
     const analyticsData = {
       summary: {
@@ -260,15 +246,11 @@ export const getPlatformAnalytics = async (req: AuthenticatedRequest, res: Respo
       },
       challenges: {
         participationRates: challengeStats,
-        totalActive: await DailyChallenge.countDocuments({ 
+        totalActive: await DailyChallenge.countDocuments({
           isActive: true,
           validDate: { $lte: new Date() },
           expiryDate: { $gt: new Date() }
         })
-      },
-      family: {
-        totalFamilyLinks: familyStats[0]?.totalFamilyLinks || 0,
-        avgChildrenPerParent: Math.round((familyStats[0]?.avgChildrenPerParent || 0) * 100) / 100
       },
       metadata: {
         generatedAt: new Date(),
@@ -319,11 +301,9 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
       });
     }
 
-    // Students, teachers, and parents in this school
-    const [students, teachers, parents] = await Promise.all([
+    const [students, teachers] = await Promise.all([
       User.find({ school: schoolId, role: 'student' }),
-      User.find({ school: schoolId, role: 'teacher' }),
-      User.find({ school: schoolId, role: 'parent' })
+      User.find({ school: schoolId, role: 'teacher' })
     ]);
 
     const studentIds = students.map(s => s._id);
@@ -331,11 +311,11 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
 
     // Learning progress for school students
     const [moduleProgress, drillProgress] = await Promise.all([
-      UserProgress.find({ 
+      UserProgress.find({
         user: { $in: studentIds },
         updatedAt: { $gte: start, $lte: end }
       }).populate('user', 'name grade').populate('module', 'title type'),
-      DrillSession.find({ 
+      DrillSession.find({
         user: { $in: studentIds },
         createdAt: { $gte: start, $lte: end }
       }).populate('user', 'name grade').populate('drill', 'title type')
@@ -343,11 +323,13 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
 
     // Class-wise performance
     const performanceByGrade = await UserProgress.aggregate([
-      { $match: { 
-        user: { $in: studentIds },
-        completed: true,
-        updatedAt: { $gte: start, $lte: end }
-      }},
+      {
+        $match: {
+          user: { $in: studentIds },
+          completed: true,
+          updatedAt: { $gte: start, $lte: end }
+        }
+      },
       {
         $lookup: {
           from: 'users',
@@ -375,10 +357,12 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
 
     // Top performing students
     const topStudents = await UserProgress.aggregate([
-      { $match: { 
-        user: { $in: studentIds },
-        completed: true
-      }},
+      {
+        $match: {
+          user: { $in: studentIds },
+          completed: true
+        }
+      },
       {
         $group: {
           _id: '$user',
@@ -433,39 +417,28 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
       }
     ]);
 
-    // Family engagement for this school
-    const familyEngagement = await FamilyRelationship.aggregate([
-      { $match: { children: { $in: studentIds }, isVerified: true } },
-      {
-        $group: {
-          _id: null,
-          totalFamilyLinks: { $sum: 1 },
-          childrenWithParents: { $sum: { $size: '$children' } }
-        }
-      }
-    ]);
 
     // Recent activities timeline
     const recentActivities = await Promise.all([
-      UserProgress.find({ 
+      UserProgress.find({
         userId: { $in: studentIds },
         status: 'completed',
         updatedAt: { $gte: start, $lte: end }
       })
-      .populate('userId', 'name grade')
-      .populate('moduleId', 'title')
-      .sort({ updatedAt: -1 })
-      .limit(50),
-      
-      DrillSession.find({ 
+        .populate('userId', 'name grade')
+        .populate('moduleId', 'title')
+        .sort({ updatedAt: -1 })
+        .limit(50),
+
+      DrillSession.find({
         userId: { $in: studentIds },
         isCompleted: true,
         createdAt: { $gte: start, $lte: end }
       })
-      .populate('userId', 'name grade')
-      .populate('drillType', 'title')
-      .sort({ createdAt: -1 })
-      .limit(50)
+        .populate('userId', 'name grade')
+        .populate('drillType', 'title')
+        .sort({ createdAt: -1 })
+        .limit(50)
     ]);
 
     const schoolAnalytics = {
@@ -474,11 +447,10 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
         name: school.name,
         district: school.address.district,
         totalStudents: students.length,
-        totalTeachers: teachers.length,
-        totalParents: parents.length
+        totalTeachers: teachers.length
       },
       performance: {
-        overallAvgScore: moduleProgress.length > 0 
+        overallAvgScore: moduleProgress.length > 0
           ? Math.round((moduleProgress.reduce((sum, p) => sum + p.score, 0) / moduleProgress.length) * 100) / 100
           : 0,
         totalModuleCompletions: moduleProgress.filter(p => p.status === 'completed').length,
@@ -504,14 +476,7 @@ export const getSchoolAnalytics = async (req: AuthenticatedRequest, res: Respons
         }, {} as Record<string, number>)
       },
       engagement: {
-        streakAnalysis: streakAnalysis,
-        familyEngagement: {
-          linkedFamilies: familyEngagement[0]?.totalFamilyLinks || 0,
-          childrenWithParents: familyEngagement[0]?.childrenWithParents || 0,
-          parentalEngagementRate: students.length > 0 
-            ? Math.round(((familyEngagement[0]?.childrenWithParents || 0) / students.length) * 100)
-            : 0
-        }
+        streakAnalysis: streakAnalysis
       },
       recentActivities: [
         ...recentActivities[0].map(activity => ({
@@ -567,11 +532,11 @@ export const getPersonalAnalytics = async (req: AuthenticatedRequest, res: Respo
 
     // Learning progress
     const [moduleProgress, drillProgress, badges, streaks] = await Promise.all([
-      UserProgress.find({ 
+      UserProgress.find({
         userId: userId,
         updatedAt: { $gte: start, $lte: end }
       }).populate('moduleId', 'title type difficulty'),
-      DrillSession.find({ 
+      DrillSession.find({
         userId: userId,
         createdAt: { $gte: start, $lte: end }
       }),
@@ -580,7 +545,7 @@ export const getPersonalAnalytics = async (req: AuthenticatedRequest, res: Respo
     ]);
 
     // Challenge participation
-    const challenges = await UserChallenge.find({ 
+    const challenges = await UserChallenge.find({
       userId: userId,
       updatedAt: { $gte: start, $lte: end }
     }).populate('challenge', 'title type difficulty');
@@ -653,7 +618,7 @@ export const getPersonalAnalytics = async (req: AuthenticatedRequest, res: Respo
         totalBadges: badges.length,
         totalXP: moduleProgress.reduce((sum, p) => sum + (p.xpEarned || 0), 0),
         totalPoints: moduleProgress.reduce((sum, p) => sum + (p.pointsEarned || 0), 0),
-        avgScore: moduleProgress.length > 0 
+        avgScore: moduleProgress.length > 0
           ? Math.round((moduleProgress.reduce((sum, p) => sum + p.score, 0) / moduleProgress.length) * 100) / 100
           : 0
       },
@@ -797,8 +762,7 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
           _id: '$district',
           totalUsers: { $sum: 1 },
           students: { $sum: { $cond: [{ $eq: ['$role', 'student'] }, 1, 0] } },
-          teachers: { $sum: { $cond: [{ $eq: ['$role', 'teacher'] }, 1, 0] } },
-          parents: { $sum: { $cond: [{ $eq: ['$role', 'parent'] }, 1, 0] } }
+          teachers: { $sum: { $cond: [{ $eq: ['$role', 'teacher'] }, 1, 0] } }
         }
       }
     ]);
@@ -872,7 +836,6 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
         totalUsers: districtSummary.reduce((sum, d) => sum + d.totalUsers, 0),
         totalStudents: districtSummary.reduce((sum, d) => sum + d.students, 0),
         totalTeachers: districtSummary.reduce((sum, d) => sum + d.teachers, 0),
-        totalParents: districtSummary.reduce((sum, d) => sum + d.parents, 0),
         avgPreparednessScore: schoolsData.reduce((sum, s) => sum + (s.avgScore || 0), 0) / Math.max(schoolsData.length, 1)
       },
       districtBreakdown: districtSummary,
@@ -886,9 +849,9 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
         totalDrills: metric.totalDrills,
         avgCompletionTime: Math.round(metric.avgCompletionTime * 100) / 100,
         avgScore: Math.round(metric.avgScore * 100) / 100,
-        preparednessRating: metric.avgScore >= 75 ? 'Excellent' : 
-                           metric.avgScore >= 60 ? 'Good' : 
-                           metric.avgScore >= 45 ? 'Fair' : 'Needs Improvement'
+        preparednessRating: metric.avgScore >= 75 ? 'Excellent' :
+          metric.avgScore >= 60 ? 'Good' :
+            metric.avgScore >= 45 ? 'Fair' : 'Needs Improvement'
       })),
       recommendations: [
         {
@@ -898,17 +861,11 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
           action: 'Increase training focus and provide additional resources'
         },
         {
-          priority: 'Medium', 
+          priority: 'Medium',
           area: 'Teacher Training',
           metric: `${districtSummary.reduce((sum, d) => sum + d.teachers, 0)} teachers registered`,
           action: 'Expand teacher training programs for disaster preparedness'
         },
-        {
-          priority: 'Medium',
-          area: 'Parent Engagement',
-          metric: `${Math.round((districtSummary.reduce((sum, d) => sum + d.parents, 0) / districtSummary.reduce((sum, d) => sum + d.students, 0)) * 100)}% parent participation`,
-          action: 'Increase family engagement initiatives'
-        }
       ]
     };
 
@@ -928,7 +885,7 @@ export const getComplianceReport = async (req: AuthenticatedRequest, res: Respon
 
 export default {
   getPlatformAnalytics,
-  getSchoolAnalytics, 
+  getSchoolAnalytics,
   getPersonalAnalytics,
   getComplianceReport
 };

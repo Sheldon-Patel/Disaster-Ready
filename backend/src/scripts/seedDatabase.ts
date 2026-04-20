@@ -36,7 +36,6 @@ const seedDatabase = async () => {
     console.log('   Admin:   admin@demo.com   / admin123');
     console.log('   Teacher: teacher@demo.com / teacher123');
     console.log('   Student: student@demo.com / student123');
-    console.log('   Parent:  parent@demo.com  / parent123');
 
     process.exit(0);
 
