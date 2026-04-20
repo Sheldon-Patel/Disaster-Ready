@@ -33,10 +33,10 @@ const Navbar: React.FC = () => {
           {/* Logo and brand */}
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <div className="h-8 w-8 bg-red-600 rounded-lg flex items-center justify-center">
+              <div className="h-8 w-8 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-sm">DR</span>
               </div>
-              <span className="ml-2 text-xl font-bold text-gray-900">
+              <span className="ml-2 text-lg sm:text-xl font-bold text-gray-900 truncate max-w-[150px] sm:max-w-none">
                 Disaster Ready
               </span>
             </Link>

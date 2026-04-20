@@ -235,16 +235,16 @@ const DashboardPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Header */}
-        <div className="mb-8 flex items-start justify-between">
+        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               {getGreeting()}, {user?.name?.split(' ')[0]}! 👋
             </h1>
-            <p className="mt-2 text-lg text-gray-600">{content.description}</p>
+            <p className="mt-1 sm:mt-2 text-base sm:text-lg text-gray-600">{content.description}</p>
           </div>
           <button
             onClick={fetchDashboardData}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors mt-1"
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors"
             title="Refresh dashboard"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
