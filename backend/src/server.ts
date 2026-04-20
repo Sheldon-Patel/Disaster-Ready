@@ -41,15 +41,14 @@ const server = createServer(app);
 // Setup Socket.io with CORS
 const io = new Server(server, {
   cors: {
-    origin: (process.env.NODE_ENV === 'production'
-      ? [process.env.CORS_ORIGIN || 'https://frontend-hgq0wsbob-omkars-projects-9693e6b0.vercel.app']
-      : [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'http://localhost:3001',
-        'file://',
-        null
-      ]) as any,
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // Very permissive for Vercel and local development
+      if (!origin || origin.endsWith('.vercel.app') || origin.includes('localhost') || origin === process.env.CORS_ORIGIN || origin === 'file://') {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
   }
@@ -64,15 +63,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS middleware - Enhanced for development
 app.use(cors({
-  origin: (process.env.NODE_ENV === 'production'
-    ? [process.env.CORS_ORIGIN || 'https://frontend-hgq0wsbob-omkars-projects-9693e6b0.vercel.app']
-    : [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:3001',
-      'file://', // Allow local HTML files
-      null // Allow requests with no origin (like mobile apps)
-    ]) as any,
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Very permissive for Vercel and local development
+    if (!origin || origin.endsWith('.vercel.app') || origin.includes('localhost') || origin === process.env.CORS_ORIGIN || origin === 'file://') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true
