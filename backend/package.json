@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node server-demo.js",
+    "start": "npx tsx src/server.ts",
     "start:full": "nodemon --exec npx tsx src/server.ts",
     "start:mock": "node server-auth.js",
     "dev": "nodemon --exec npx tsx src/server.ts",
