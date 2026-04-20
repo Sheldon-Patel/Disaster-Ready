@@ -3,16 +3,16 @@ import { LoginCredentials, RegisterData, AuthResponse, User, ApiResponse } from 
 
 // Use current domain for API calls, fallback to localhost for development
 const getApiUrl = () => {
-  // For production builds, always use the current domain
-  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
-    return window.location.origin;
-  }
-  
-  // For development, check if we have an explicit API URL
+  // Always prioritize explicit API URL from environment variables first
   if (process.env.REACT_APP_API_URL) {
     return process.env.REACT_APP_API_URL;
   }
-  
+
+  // Fallback to origin if no env variable is set but we are in production
+  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+
   // Default to localhost for development
   return 'http://localhost:5000';
 };
@@ -81,13 +81,13 @@ export class AuthService {
       console.log('🔧 Full URL will be:', `${api.defaults.baseURL}/auth/login`);
       console.log('📱 User Agent:', navigator.userAgent);
       console.log('🌍 Current URL:', window.location.href);
-      
+
       const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
-      
+
       if (process.env.NODE_ENV === 'development') {
         console.log('✅ AuthService: Login response:', response.status, response.data);
       }
-      
+
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || 'Login failed');
       }
@@ -111,24 +111,24 @@ export class AuthService {
           timeout: error.config?.timeout
         }
       });
-      
+
       // Handle specific mobile network issues
       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
         throw new Error('Connection timeout. Please check your internet connection and try again.');
       }
-      
+
       if (error.code === 'ERR_NETWORK' || !navigator.onLine) {
         throw new Error('Network error. Please check your internet connection.');
       }
-      
+
       if (error.response?.status === 0) {
         throw new Error('Unable to connect to server. Please try again.');
       }
-      
+
       if (error.response?.data?.message) {
         throw new Error(error.response.data.message);
       }
-      
+
       throw new Error('Login failed. Please check your credentials.');
     }
   }
@@ -136,7 +136,7 @@ export class AuthService {
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
       const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data);
-      
+
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || 'Registration failed');
       }
@@ -156,7 +156,7 @@ export class AuthService {
   async getProfile(): Promise<User> {
     try {
       const response = await api.get<ApiResponse<User>>('/auth/profile');
-      
+
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || 'Failed to fetch profile');
       }
@@ -173,7 +173,7 @@ export class AuthService {
   async updateProfile(userData: Partial<User>): Promise<User> {
     try {
       const response = await api.put<ApiResponse<User>>('/auth/profile', userData);
-      
+
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || 'Failed to update profile');
       }
