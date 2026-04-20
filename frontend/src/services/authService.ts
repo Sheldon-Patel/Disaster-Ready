@@ -8,9 +8,9 @@ const getApiUrl = () => {
     return process.env.REACT_APP_API_URL;
   }
 
-  // Fallback to origin if no env variable is set but we are in production
-  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
-    return window.location.origin;
+  // Fallback to Render if no env variable is set but we are in production
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://disaster-readydisaster-ready-backend.onrender.com';
   }
 
   // Default to localhost for development
